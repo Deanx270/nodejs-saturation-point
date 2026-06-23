@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('partials/head') %>
+    <style>
+      .success-container {
+        max-width: 600px;
+        margin: 5rem auto;
+        text-align: center;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .success-icon {
+        font-size: 4rem;
+        color: #10B981;
+        margin-bottom: 1.5rem;
+      }
+
+      .success-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--text-main);
+        margin-bottom: 1rem;
+      }
+
+      .success-text {
+        font-family: 'Inter', sans-serif;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .btn-return {
+        display: inline-block;
+        background: #0C0A09;
+        color: #FFF;
+        padding: 0.8rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.3s ease;
+      }
+
+      .btn-return:hover {
+        background: #292524;
+        color: #FFF;
+      }
+    </style>
+</head>
+
+<body>
+  <%- include('partials/header') %>
+
+    <main class="container">
+      <div class="success-container">
+        <div class="success-icon">
+          <i data-lucide="check-circle" style="width: 64px; height: 64px; stroke-width: 1.5; color: #20df9e;"></i>
+        </div>
+        <h2 class="success-title">Order Confirmed</h2>
+        <p class="success-text">Thank you for your purchase. Your order is now being processed and prepared for
+          shipping. We will notify you once it's on its way.</p>
+        <a href="/catalog" class="btn-return">Return to Catalog</a>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+      <%- include('partials/scripts') %>
+        <script>
+          if (window.lucide) {
+            lucide.createIcons();
+          }
+        </script>
+</body>
+
+</html>

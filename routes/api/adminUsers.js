@@ -1,0 +1,23 @@
+const express = require('express');
+const router = express.Router();
+const adminUserController = require('../../controllers/adminUserController');
+const { verifyToken, isAdmin } = require('../../middleware/auth');
+
+// Apply middleware to all routes in this file
+router.use(verifyToken, isAdmin);
+
+router.route('/')
+  .get(adminUserController.getUsers)
+  .post(adminUserController.createUser);
+
+router.route('/:id')
+  .put(adminUserController.updateUser)
+  .delete(adminUserController.deleteUser);
+
+router.route('/:id/role')
+  .put(adminUserController.updateUserRole);
+
+router.route('/:id/status')
+  .put(adminUserController.updateUserStatus);
+
+module.exports = router;

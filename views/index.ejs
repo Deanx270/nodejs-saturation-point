@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main>
+    <!-- Immersive Editorial Hero -->
+    <section class="hero">
+      <img src="/images/hero_luxury_pen.png" alt="Luxury Pen on Premium Paper" class="hero-bg">
+      <div class="hero-overlay"></div>
+      
+      <div class="hero-content">
+        <h1 class="hero-title brand-font">The Weight<br>of Words.</h1>
+        <p class="hero-subtitle">
+          Curated instruments for the modern connoisseur. Experience elite craftsmanship designed for those who appreciate the permanence of ink.
+        </p>
+        <!-- Premium Search Bar -->
+        <div style="position: relative; max-width: 500px; margin: 0 auto 32px auto; text-align: left;">
+          <div style="position: relative; display: flex; align-items: center;">
+            <i data-lucide="search" style="position: absolute; left: 16px; color: #1B263B; width: 20px; height: 20px; z-index: 2;"></i>
+            <input type="text" id="heroSearch" placeholder="Search the collection..." style="width: 100%; padding: 18px 24px 18px 48px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-family: 'Montserrat', sans-serif; font-size: 1rem; color: #1B263B; outline: none; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 300ms ease;">
+          </div>
+          <div id="autocompleteDropdown" class="search-dropdown">
+            <!-- Results injected here via JS -->
+          </div>
+        </div>
+
+        <a href="/catalog" class="cta-button">
+          Explore Collection 
+          <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- Featured Additions -->
+    <section class="container" style="padding-top: 60px; padding-bottom: 20px;">
+      <h2 class="section-title brand-font">Featured Additions</h2>
+      <div class="bento-grid" id="featuredGrid" style="grid-template-columns: repeat(3, 1fr); grid-auto-rows: auto;">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- Storytelling Section -->
+    <section id="story" class="storytelling-wrapper">
+      <div class="container storytelling-grid">
+        <div class="storytelling-img-wrapper">
+          <img src="/images/story_ink_flow.png" alt="Ink flowing from a gold nib onto textured paper" class="storytelling-img">
+        </div>
+        <div class="storytelling-text">
+          <span class="storytelling-eyebrow">Our Heritage</span>
+          <h2 class="brand-font">A Tradition of <em>Excellence</em></h2>
+          <p>
+            At The Saturation Point, we believe that the act of writing is sacred. In a fleeting digital world, a fine fountain pen anchors your thoughts to paper. 
+          </p>
+          <p>
+            We source only the rarest materials—18k solid gold nibs, meticulously hand-turned resins, and inks saturated with the deepest pigments. This is more than stationery; it is an heirloom.
+          </p>
+          
+          <div class="storytelling-divider"></div>
+          
+          <div class="storytelling-features">
+            <div class="feature-item">
+              <i data-lucide="gem" style="width: 22px; height: 22px;"></i>
+              <h4>Quality</h4>
+              <span>Unmatched materials</span>
+            </div>
+            <div class="feature-item">
+              <i data-lucide="pen-tool" style="width: 22px; height: 22px;"></i>
+              <h4>Passion</h4>
+              <span>Artisan crafted</span>
+            </div>
+            <div class="feature-item">
+              <i data-lucide="hourglass" style="width: 22px; height: 22px;"></i>
+              <h4>Timeless</h4>
+              <span>Heirloom status</span>
+            </div>
+          </div>
+          
+          <a href="#" class="storytelling-btn">Discover Our Story</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento Grid Showcase -->
+    <section id="collection" class="bento-section container">
+      <h2 class="section-title brand-font">The Collection</h2>
+      <div class="bento-grid">
+        
+        <!-- Large Card -->
+        <a href="/catalog?category=Pen" class="bento-card bento-large" style="text-decoration: none; display: block;">
+          <img src="/images/bento_nib_macro.png" alt="Exquisite Nibs" class="bento-card-img">
+          <div class="bento-overlay"></div>
+          <div class="bento-content">
+            <h3 class="brand-font" style="color: #fff;">Exquisite Nibs</h3>
+            <p style="color: rgba(255,255,255,0.8);">14k & 18k gold mastery for a breathtaking glide across the page.</p>
+          </div>
+        </a>
+        
+        <!-- Tall Card -->
+        <a href="/catalog?category=Ink" class="bento-card bento-tall" style="text-decoration: none; display: block;">
+          <img src="/images/bento_ink_bottle.png" alt="Deep Inks" class="bento-card-img">
+          <div class="bento-overlay"></div>
+          <div class="bento-content">
+            <h3 class="brand-font" style="color: #fff;">Deep Inks</h3>
+            <p style="color: rgba(255,255,255,0.8);">Rich, saturated tones and shimmering flows.</p>
+          </div>
+        </a>
+
+        <!-- Standard Cards -->
+        <a href="/catalog?category=Paper" class="bento-card" style="text-decoration: none; display: block;">
+          <img src="/images/bento_premium_paper.png" alt="Tomoe River" class="bento-card-img">
+          <div class="bento-overlay"></div>
+          <div class="bento-content">
+            <h3 class="brand-font" style="color: #fff;">Tomoe River</h3>
+            <p style="color: rgba(255,255,255,0.8);">The global standard in premium writing paper.</p>
+          </div>
+        </a>
+        
+        <div class="bento-card">
+          <div style="background: var(--bg-card); width: 100%; height: 100%; position: absolute; top:0; left:0; z-index:0;"></div>
+          <div class="bento-content" style="color: var(--text-main);">
+            <h3 class="brand-font" style="color: var(--text-main);">Bespoke Editions</h3>
+            <p style="color: var(--text-muted);">Limited runs from legendary houses.</p>
+            <a href="/catalog" style="color: var(--accent-gold); text-decoration: none; margin-top: 16px; display: inline-block; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem;">View Catalog <i data-lucide="arrow-right" style="width: 14px; height: 14px; vertical-align: middle; margin-bottom: 2px;"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Premium Footer -->
+  <%- include('partials/footer') %>
+
+  <%- include('partials/scripts') %>
+  <script>
+    lucide.createIcons();
+    
+    // Smooth scroll for CTA
+    $('a[href^="#"]').on('click', function(event) {
+        var target = $(this.getAttribute('href'));
+        if( target.length ) {
+            event.preventDefault();
+            $('html, body').stop().animate({
+                scrollTop: target.offset().top - 80
+            }, 800, 'swing');
+        }
+    });
+
+    // Search Autocomplete Logic
+    let searchTimeout;
+    $('#heroSearch').on('input', function() {
+      const q = $(this).val().trim();
+      clearTimeout(searchTimeout);
+      
+      const dropdown = $('#autocompleteDropdown');
+      
+      if (q.length < 2) {
+        dropdown.hide().empty();
+        return;
+      }
+      
+      searchTimeout = setTimeout(() => {
+        $.ajax({
+          url: '/api/products/search',
+          data: { q: q },
+          success: function(products) {
+            dropdown.empty();
+            if (products.length === 0) {
+              dropdown.append('<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">No masterpieces found.</div>');
+            } else {
+              products.forEach(p => {
+                const img = p.images && p.images.length > 0 ? p.images[0] : '/images/hero_luxury_pen.png';
+                const price = parseFloat(p.price).toLocaleString('en-US', {minimumFractionDigits: 2});
+                dropdown.append(`
+                  <a href="/product/${p.id}" class="search-dropdown-item">
+                    <img src="${img}" class="search-thumb" alt="${p.name}">
+                    <div class="search-text">
+                      <span class="search-name">${p.name}</span>
+                      <span class="search-price">₱${price}</span>
+                    </div>
+                  </a>
+                `);
+              });
+            }
+            dropdown.slideDown(200);
+          }
+        });
+      }, 300);
+    });
+
+    // Close dropdown on click outside
+    $(document).on('click', function(e) {
+      if (!$(e.target).closest('#heroSearch, #autocompleteDropdown').length) {
+        $('#autocompleteDropdown').slideUp(200);
+      }
+    });
+
+    // Load Featured Products
+    $.ajax({
+      url: '/api/products?limit=3',
+      success: function(products) {
+        const grid = $('#featuredGrid');
+        grid.empty();
+        products.forEach((p, index) => {
+          const img = p.images && p.images.length > 0 ? p.images[0] : '/images/hero_luxury_pen.png';
+          const price = parseFloat(p.price).toLocaleString('en-US', {minimumFractionDigits: 2});
+          grid.append(`
+            <a href="/product/${p.id}" class="product-card fade-in-up" style="animation-delay: ${index * 100}ms;">
+              <div style="position: relative; width: 100%; padding-top: 100%; background-color: #FFFFFF; overflow: hidden; border-bottom: 1px solid rgba(27,38,59,0.05);">
+                <img src="${img}" alt="${p.name}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 1rem; box-sizing: border-box;">
+              </div>
+              <div class="product-card-details">
+                <h3 class="product-card-title">${p.name}</h3>
+                <p class="product-card-desc">${p.description || ''}</p>
+                <div class="product-card-footer">
+                  <span class="product-card-price">₱${price}</span>
+                  <button type="button" class="btn-cart add-to-cart" data-id="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-price="${p.price}" title="Add to Cart">
+                    <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i>
+                  </button>
+                </div>
+              </div>
+            </a>
+          `);
+        });
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

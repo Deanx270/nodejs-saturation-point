@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body style="display: none;">
+
+  <%- include('partials/header') %>
+
+  <%- include('partials/admin-subnav') %>
+
+  <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
+    <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+        <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">Product Management</h2>
+        <button id="addProductBtn" class="btn-submit" style="width: auto; margin: 0; padding: 12px 32px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Product
+        </button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table id="productsTable" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Brand</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 class="brand-font" id="modalTitle" style="font-size: 1.5rem; margin: 0;">Add Product</h3>
+        <button type="button" class="close-modal" id="closeModal" style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i data-lucide="x" style="width: 24px; height: 24px;"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm" enctype="multipart/form-data">
+          <input type="hidden" id="productId" name="id">
+          
+          <div class="form-group">
+            <label for="name" class="form-label">Product Name</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label for="brandId" class="form-label">Brand</label>
+              <select id="brandId" name="brandId" class="form-control action-select" style="width: 100%; border-bottom: 1px solid rgba(28, 25, 23, 0.2); border-radius: 0;" required>
+                <!-- Populated via AJAX -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="categoryId" class="form-label">Category</label>
+              <select id="categoryId" name="categoryId" class="form-control action-select" style="width: 100%; border-bottom: 1px solid rgba(28, 25, 23, 0.2); border-radius: 0;" required>
+                <!-- Populated via AJAX -->
+              </select>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label for="price" class="form-label">Price (₱)</label>
+              <input type="number" step="0.01" id="price" name="price" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="stock" class="form-label">Stock</label>
+              <input type="number" id="stock" name="stock" class="form-control" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Product Images (Max 5, 5MB each)</label>
+            <!-- Hidden file input -->
+            <input type="file" id="images" name="images" multiple accept="image/*" style="display: none;">
+            
+            <div id="dropzone" class="dropzone">
+              <i data-lucide="upload-cloud" style="width: 32px; height: 32px; color: var(--accent-gold); margin-bottom: 12px;"></i>
+              <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);"><strong>Click to upload</strong> or drag and drop</p>
+              <p style="margin: 4px 0 0 0; font-size: 0.75rem; color: var(--text-muted); opacity: 0.8;">SVG, PNG, JPG or WEBP</p>
+            </div>
+            
+            <div id="imagePreviewGrid" class="image-preview-grid">
+              <!-- Thumbnails go here -->
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-submit">Save Product</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+
+  <%- include('partials/scripts') %>
+  <script src="/js/admin-products.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

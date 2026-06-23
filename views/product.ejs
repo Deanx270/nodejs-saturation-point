@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('partials/head') %>
+    <style>
+      .star-rating {
+        display: inline-flex;
+        gap: 4px;
+        cursor: pointer;
+      }
+
+      .star-rating i {
+        color: #D1D5DB;
+        /* Grey outline */
+        transition: color 0.2s ease, fill 0.2s ease;
+        width: 28px;
+        height: 28px;
+      }
+
+      .star-rating i.hovered,
+      .star-rating i.selected {
+        color: var(--accent-gold);
+        fill: var(--accent-gold);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+</head>
+
+<body>
+
+  <%- include('partials/header') %>
+
+    <main class="container" style="padding-top: 40px; padding-bottom: 120px;">
+      <!-- Breadcrumb -->
+      <div
+        style="margin-bottom: 24px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: var(--text-muted);">
+        <a href="/catalog" style="color: var(--text-muted); text-decoration: none;">Catalog</a> / <span
+          id="breadName">Loading...</span>
+      </div>
+
+      <div class="product-page-container" id="productContainer" style="display: none;">
+        <!-- Left: Gallery -->
+        <div class="product-gallery" style="width: 100%;">
+          <div
+            style="aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; border-radius: 8px; overflow: hidden; background: #fff;">
+            <img src="" id="mainImage" class="product-main-img" alt="Product Image"
+              style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="product-thumbnails" id="thumbnailGrid"
+            style="display: flex; flex-direction: row; gap: 10px; overflow-x: auto; margin-top: 16px;">
+            <!-- Thumbnails injected here -->
+          </div>
+        </div>
+
+        <!-- Right: Details -->
+        <div class="product-details">
+          <div class="product-brand" id="brandName"></div>
+          <h1 class="product-title brand-font" id="productName"></h1>
+
+          <div id="productRatingUI" style="display: none; margin-bottom: 12px;">
+            <a href="#reviewsSection"
+              style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; transition: opacity 0.2s ease;"
+              onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+              <div id="ratingStarIcon"
+                style="display: flex; gap: 2px; color: var(--accent-gold); fill: var(--accent-gold);">
+                <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+              </div>
+              <span id="averageRatingText"
+                style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--text-main);"></span>
+              <span id="totalReviewsText"
+                style="font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: var(--text-muted); text-decoration: underline;"></span>
+            </a>
+          </div>
+
+          <div class="product-price" id="productPrice"></div>
+
+          <div style="margin-bottom: 24px;">
+            <span id="stockStatus"
+              style="padding: 4px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;"></span>
+          </div>
+
+          <div class="product-description" id="productDesc"
+            style="line-height: 1.8; font-size: 0.95rem; margin-bottom: 32px; color: var(--text-muted);"></div>
+
+          <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 48px;">
+            <div class="quantity-selector"
+              style="display: inline-flex; align-items: center; background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 50px; padding: 4px 8px; overflow: hidden; height: 48px;">
+              <button type="button" id="qtyMinus"
+                style="background: transparent; border: none; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted);"><i
+                  data-lucide="minus" style="width: 16px; height: 16px;"></i></button>
+              <input type="number" id="qtyInput" value="1" min="1"
+                style="width: 40px; text-align: center; border: none; background: transparent; font-family: 'Montserrat', sans-serif; font-weight: 500; color: var(--text-main); font-size: 1rem;"
+                readonly>
+              <button type="button" id="qtyPlus"
+                style="background: transparent; border: none; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted);"><i
+                  data-lucide="plus" style="width: 16px; height: 16px;"></i></button>
+            </div>
+            <button class="btn-cart-large" id="btnAddToCart"
+              style="flex: 1; height: 48px; border-radius: 50px; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent-dark); color: #FFF; font-weight: 500; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: opacity 0.2s ease;">
+              <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i> Add to Cart
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Customer Reviews Section (Full Width) -->
+      <section class="reviews-section"
+        style="padding-top: 3rem; border-top: 1px solid rgba(27,38,59,0.1); display: none;" id="reviewsSection">
+        <h2 class="brand-font" style="font-size: 2.5rem; margin-bottom: 32px; color: var(--text-main);">Customer Reviews
+        </h2>
+
+        <div id="reviewFormContainer"
+          style="display: none; background: #FFFFFF; padding: 32px; border-radius: 12px; margin-bottom: 40px; border: 1px solid rgba(27,38,59,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <h4
+            style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; margin-bottom: 24px; font-weight: 600; color: var(--text-main);">
+            Write a Review</h4>
+          <form id="reviewForm">
+            <div style="margin-bottom: 20px;">
+              <style>
+                #starRatingSelector {
+                  display: flex;
+                  gap: 4px;
+                }
+
+                #starRatingSelector svg {
+                  cursor: pointer;
+                  color: #D1D5DB;
+                  fill: none;
+                  width: 28px;
+                  height: 28px;
+                  transition: all 0.2s ease;
+                }
+
+                #starRatingSelector svg.hovered,
+                #starRatingSelector svg.selected {
+                  color: #D4AF37;
+                  fill: #D4AF37;
+                }
+              </style>
+              <div class="star-rating" id="starRatingSelector">
+                <i data-lucide="star" data-val="1"></i>
+                <i data-lucide="star" data-val="2"></i>
+                <i data-lucide="star" data-val="3"></i>
+                <i data-lucide="star" data-val="4"></i>
+                <i data-lucide="star" data-val="5"></i>
+              </div>
+              <input type="hidden" id="reviewRating" name="rating" value="0">
+            </div>
+            <div style="margin-bottom: 20px;">
+              <textarea id="reviewComment" class="form-control" rows="4" maxlength="500"
+                placeholder="Share your thoughts about this product (optional)"
+                style="resize: vertical; font-size: 1.05rem; line-height: 1.8; padding: 16px;"></textarea>
+              <div style="text-align: right; font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;"><span
+                  id="charCount">0</span> / 500 characters</div>
+            </div>
+            <button type="submit" class="btn-submit" id="submitReviewBtn"
+              style="width: auto; padding: 12px 32px; font-size: 1rem;">Submit Review</button>
+          </form>
+        </div>
+
+        <div id="loginPromptContainer"
+          style="display: none; background: #FFFFFF; padding: 32px; border-radius: 12px; margin-bottom: 40px; text-align: center; border: 1px solid rgba(27,38,59,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <p
+            style="margin-bottom: 16px; color: var(--text-muted); font-family: 'Montserrat', sans-serif; font-size: 1.05rem;">
+            You must be logged in to write a review.</p>
+          <a href="/login" class="btn-submit"
+            style="display: inline-block; width: auto; padding: 10px 32px; text-decoration: none;">Log In</a>
+        </div>
+
+        <div id="notPurchasedContainer"
+          style="display: none; background: #FFFFFF; padding: 32px; border-radius: 12px; margin-bottom: 40px; text-align: center; border: 1px solid rgba(27,38,59,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: center; margin-bottom: 16px; color: var(--text-muted);">
+            <i data-lucide="shopping-bag" style="width: 32px; height: 32px;"></i>
+          </div>
+          <p style="margin: 0; color: var(--text-muted); font-family: 'Montserrat', sans-serif; font-size: 1.05rem;">You
+            can only review products you have purchased and received.</p>
+        </div>
+
+        <div id="reviewsList"
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+          <!-- Reviews injected here -->
+        </div>
+      </section>
+      </div>
+
+      <div id="loadingSpinner" class="luxury-spinner"></div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+      <%- include('partials/scripts') %>
+        <script>
+          lucide.createIcons();
+
+          $(document).ready(function () {
+            const pathParts = window.location.pathname.split('/');
+            const productId = pathParts[pathParts.length - 1];
+
+            let productData = null;
+
+            $.ajax({
+              url: `/api/products/${productId}`,
+              type: 'GET',
+              success: function (product) {
+                productData = product;
+                $('#loadingSpinner').hide();
+                $('#productContainer').fadeIn(400);
+                $('#reviewsSection').fadeIn(400);
+
+                $('#breadName').text(product.name);
+                $('#productName').text(product.name);
+                $('#brandName').text(product.Brand ? product.Brand.name : 'The Saturation Point');
+                $('#productPrice').text('₱' + parseFloat(product.price).toLocaleString('en-US', { minimumFractionDigits: 2 }));
+                $('#productDesc').html((product.description || '').replace(/\n/g, '<br>'));
+
+                if (product.stock > 10) {
+                  $('#stockStatus').text('In Stock').css({ background: 'rgba(202, 138, 4, 0.1)', color: 'var(--accent-gold)' });
+                } else if (product.stock > 0 && product.stock <= 10) {
+                  $('#stockStatus').text(`Only ${product.stock} Left`).css({ background: 'rgba(217, 119, 6, 0.15)', color: '#D97706' });
+                } else {
+                  $('#stockStatus').text('Out of Stock').css({ background: 'rgba(153, 27, 27, 0.1)', color: '#991b1b' });
+                  $('#btnAddToCart').prop('disabled', true).css({ opacity: 0.5, cursor: 'not-allowed' });
+                  $('#qtyPlus, #qtyMinus').prop('disabled', true).css({ opacity: 0.5, cursor: 'not-allowed' });
+                }
+
+                // Render Rating
+                $('#productRatingUI').show();
+                if (product.averageRating > 0) {
+                  $('#ratingStarIcon').show();
+                  $('#averageRatingText').text(product.averageRating).show();
+                  $('#totalReviewsText').text(`(${product.Reviews.length} Reviews)`);
+                } else {
+                  $('#ratingStarIcon').hide();
+                  $('#averageRatingText').hide();
+                  $('#totalReviewsText').text('Be the first to review');
+                }
+
+                // Render Reviews
+                $('#reviewsSection').show();
+                const reviewsList = $('#reviewsList');
+
+                // Extract current user ID from token to sort reviews
+                const token = localStorage.getItem('token');
+                let currentUserId = null;
+                if (token) {
+                  try {
+                    currentUserId = JSON.parse(atob(token.split('.')[1])).id;
+                  } catch (e) { }
+                }
+
+                if (product.Reviews && product.Reviews.length > 0) {
+                  // Sort reviews: Current user's review first, then by date descending
+                  product.Reviews.sort((a, b) => {
+                    if (a.User.id === currentUserId) return -1;
+                    if (b.User.id === currentUserId) return 1;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                  });
+
+                  product.Reviews.forEach(rev => {
+                    const date = new Date(rev.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    const initial = rev.User.firstName ? rev.User.firstName.charAt(0) : 'U';
+
+                    const escapeHTML = (str) => {
+                      if (!str) return '';
+                      return String(str).replace(/[&<>'"]/g, tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                      }[tag] || tag));
+                    };
+
+                    const safeFirstName = escapeHTML(rev.User.firstName);
+                    const safeLastName = escapeHTML(rev.User.lastName);
+                    const safeComment = escapeHTML(rev.comment).replace(/\n/g, '<br>');
+
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                      const fill = i <= rev.rating ? 'var(--accent-gold)' : 'none';
+                      const color = i <= rev.rating ? 'var(--accent-gold)' : '#D1D5DB';
+                      starsHtml += `<i data-lucide="star" style="width: 14px; height: 14px; color: ${color}; fill: ${fill};"></i>`;
+                    }
+
+                    reviewsList.append(`
+                <div style="background: #FFFFFF; padding: 2rem; border-radius: 12px; border: 1px solid rgba(27,38,59,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between;">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                      <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-subtle); overflow: hidden; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 600; color: var(--text-muted);">
+                        ${rev.User.profilePicture ? `<img src="${rev.User.profilePicture}" style="width: 100%; height: 100%; object-fit: cover;">` : `<img src="/images/default-avatar.png" style="width: 100%; height: 100%; object-fit: cover;">`}
+                      </div>
+                      <div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; color: var(--text-main); font-size: 1.05rem;">${safeFirstName} ${safeLastName}</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                          <div style="display: flex; gap: 2px;">${starsHtml}</div>
+                          <span style="font-size: 0.85rem; color: var(--text-muted);">${date}</span>
+                        </div>
+                      </div>
+                    </div>
+                    ${rev.comment ? `<p style="font-size: 1.05rem; color: var(--text-muted); line-height: 1.8; margin: 0;">${safeComment}</p>` : ''}
+                  </div>
+                </div>
+              `);
+                  });
+                  if (window.lucide) { lucide.createIcons(); }
+                } else {
+                  reviewsList.html('<div style="grid-column: 1 / -1;"><p style="color: var(--text-muted); font-family: \\"Montserrat\\", sans-serif; font-size: 1.05rem;">No reviews yet. Be the first to review this product!</p></div>');
+                }
+
+                // Gallery Setup
+                const images = product.images && product.images.length > 0 ? product.images : ['/images/hero_luxury_pen.png'];
+                $('#mainImage').attr('src', images[0]);
+
+                if (images.length > 1) {
+                  const thumbGrid = $('#thumbnailGrid');
+                  images.forEach((imgUrl, index) => {
+                    const activeClass = index === 0 ? 'active' : '';
+                    thumbGrid.append(`<img src="${imgUrl}" class="thumb-img ${activeClass}" data-url="${imgUrl}" alt="Thumbnail">`);
+                  });
+
+                  // Thumbnail Click Logic
+                  $('.thumb-img').on('click', function () {
+                    $('.thumb-img').removeClass('active');
+                    $(this).addClass('active');
+
+                    const newSrc = $(this).data('url');
+                    const mainImg = $('#mainImage');
+                    mainImg.css('opacity', '0.5');
+                    setTimeout(() => {
+                      mainImg.attr('src', newSrc);
+                      mainImg.css('opacity', '1');
+                    }, 150);
+                  });
+                } else {
+                  $('#thumbnailGrid').hide();
+                }
+              },
+              error: function () {
+                $('#loadingSpinner').hide();
+                $('main.container').html('<div style="text-align:center; padding: 100px 0;"><h2>Product not found.</h2><a href="/catalog" style="color:var(--accent-gold);">Return to Catalog</a></div>');
+              }
+            });
+
+            // Quantity Logic
+            $('#qtyMinus').on('click', function () {
+              let val = parseInt($('#qtyInput').val());
+              if (val > 1) $('#qtyInput').val(val - 1);
+            });
+            $('#qtyPlus').on('click', function () {
+              let val = parseInt($('#qtyInput').val());
+              if (productData && val < productData.stock) {
+                $('#qtyInput').val(val + 1);
+              }
+            });
+
+            // Add to Cart
+            $('#btnAddToCart').on('click', function () {
+              if (!productData || productData.stock === 0) return;
+
+              const qtyToAdd = parseInt($('#qtyInput').val()) || 1;
+              let cart = JSON.parse(localStorage.getItem('cart')) || [];
+              const existingItem = cart.find(item => item.id === productData.id);
+
+              if (existingItem) {
+                // Check if adding exceeds stock
+                if (existingItem.quantity + qtyToAdd > productData.stock) {
+                  const Toast = Swal.mixin({
+                    toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' }
+                  });
+                  Toast.fire({ icon: 'error', title: 'Cannot exceed available stock' });
+                  return;
+                }
+                existingItem.quantity += qtyToAdd;
+              } else {
+                const images = productData.images && productData.images.length > 0 ? productData.images : ['/images/hero_luxury_pen.png'];
+                cart.push({ id: productData.id, name: productData.name, price: productData.price, quantity: qtyToAdd, imageUrl: images[0] });
+              }
+              localStorage.setItem('cart', JSON.stringify(cart));
+
+              // Update Badge
+              const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+              const badge = $('#cartBadge');
+              badge.text(totalItems).css('display', 'inline-flex').addClass('bump');
+              setTimeout(() => badge.removeClass('bump'), 300);
+
+              // Reset Qty Input
+              $('#qtyInput').val(1);
+
+              // Toast Feedback
+              const Toast = Swal.mixin({
+                toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' }
+              });
+              Toast.fire({ icon: 'success', title: 'Item added to cart' });
+            });
+
+            // --- Review Logic ---
+            const token = localStorage.getItem('token');
+            if (token) {
+              $.ajax({
+                url: `/api/products/${productId}/can-review`,
+                type: 'GET',
+                cache: false,
+                headers: { 'Authorization': 'Bearer ' + token },
+                success: function (res) {
+                  if (res.canReview || res.reason === 'already_reviewed') {
+                    $('#reviewFormContainer').show();
+                    if (res.reason === 'already_reviewed' && res.existingReview) {
+                      $('#submitReviewBtn').text('Update Review');
+                      currentRating = res.existingReview.rating;
+                      $('#reviewRating').val(currentRating);
+                      $('#reviewComment').val(res.existingReview.comment || '');
+                      $('#charCount').text((res.existingReview.comment || '').length);
+                      $('#starRatingSelector svg').each(function () {
+                        if (parseInt($(this).attr('data-val')) <= currentRating) {
+                          $(this).addClass('selected');
+                        }
+                      });
+                    }
+                  } else if (res.reason === 'not_purchased') {
+                    $('#notPurchasedContainer').show();
+                  }
+                }
+              });
+            } else {
+              $('#loginPromptContainer').show();
+            }
+            // Interactive Star Rating
+            let currentRating = 0;
+
+            $('#starRatingSelector').on('mouseover', 'svg', function () {
+              const val = parseInt($(this).attr('data-val'));
+              $('#starRatingSelector svg').each(function () {
+                if (parseInt($(this).attr('data-val')) <= val) {
+                  $(this).addClass('hovered');
+                } else {
+                  $(this).removeClass('hovered');
+                }
+              });
+            }).on('mouseout', 'svg', function () {
+              $('#starRatingSelector svg').removeClass('hovered');
+            }).on('click', 'svg', function () {
+              currentRating = parseInt($(this).attr('data-val'));
+              $('#reviewRating').val(currentRating);
+              $('#starRatingSelector svg').removeClass('selected');
+              $('#starRatingSelector svg').each(function () {
+                if (parseInt($(this).attr('data-val')) <= currentRating) {
+                  $(this).addClass('selected');
+                }
+              });
+            });
+
+            // Character Counter
+            $('#reviewComment').on('input', function () {
+              $('#charCount').text($(this).val().length);
+            });
+
+            // Submit Review
+            $('#reviewForm').submit(function (e) {
+              e.preventDefault();
+              const rating = parseInt($('#reviewRating').val());
+              const comment = $('#reviewComment').val().trim();
+
+              if (rating === 0) {
+                Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: 'warning', title: 'Please select a star rating' });
+                return;
+              }
+
+              const btn = $('#submitReviewBtn');
+              const originalText = btn.text();
+              btn.text('Submitting...').prop('disabled', true);
+
+              $.ajax({
+                url: `/api/products/${productId}/reviews`,
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                contentType: 'application/json',
+                data: JSON.stringify({ rating, comment }),
+                success: function (res) {
+                  Swal.fire('Success', 'Review added successfully', 'success').then(() => {
+                    window.location.reload();
+                  });
+                },
+                error: function (err) {
+                  const errorMsg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to submit review';
+                  Swal.fire({
+                    title: 'Error',
+                    text: errorMsg,
+                    icon: 'error',
+                    confirmButtonColor: '#1B263B'
+                  });
+                },
+                complete: function () {
+                  btn.text(originalText).prop('disabled', false);
+                }
+              });
+            });
+
+          });
+        </script>
+</body>
+
+</html>

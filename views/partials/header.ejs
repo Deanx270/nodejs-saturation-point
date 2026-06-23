@@ -1,0 +1,25 @@
+<nav class="navbar-sticky" style="border-bottom: 1px solid rgba(27, 38, 59, 0.1);">
+  <div class="container navbar-inner">
+    <a href="/" class="brand-logo">The Saturation Point</a>
+    <div class="nav-links" id="navLinks">
+      <a href="/catalog" class="nav-link">Catalog</a>
+      <a href="/login" class="nav-link">Login</a>
+      <a href="/register" class="nav-link">Register</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Hydrate cart badge immediately on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 1), 0);
+      const badge = document.getElementById('cartBadge');
+      if (totalItems > 0 && badge) {
+        badge.textContent = totalItems;
+        badge.style.display = 'inline-flex';
+      }
+    } catch (e) {}
+  });
+</script>

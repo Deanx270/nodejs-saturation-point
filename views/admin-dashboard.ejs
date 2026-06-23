@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 24px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .kpi-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .kpi-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #636E72;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .kpi-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.25rem;
+      color: #1B263B;
+      font-weight: 700;
+    }
+    .kpi-icon {
+      color: #D4AF37;
+      width: 24px;
+      height: 24px;
+      margin-bottom: 8px;
+    }
+    .chart-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .chart-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
+    }
+    .chart-card.full-width {
+      grid-column: span 3;
+    }
+    .chart-card.span-2 {
+      grid-column: span 2;
+    }
+    .chart-card.span-1 {
+      grid-column: span 1;
+    }
+    .chart-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: #1B263B;
+      margin-top: 0;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body style="display: none; background-color: #FAF9F6;">
+  <%- include('partials/header') %>
+  <%- include('partials/admin-subnav') %>
+  
+  <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
+    <h2 class="brand-font" style="font-size: 2.5rem; margin-bottom: 16px; color: #1B263B;">Admin Dashboard</h2>
+    <p style="color: #636E72; font-family: 'Inter', sans-serif; margin-bottom: 32px;">Real-time analytics and store performance.</p>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <i data-lucide="banknote" class="kpi-icon"></i>
+        <span class="kpi-title">Total Revenue</span>
+        <span class="kpi-value" id="kpiRevenue">₱0</span>
+      </div>
+      <div class="kpi-card">
+        <i data-lucide="shopping-bag" class="kpi-icon"></i>
+        <span class="kpi-title">Total Orders</span>
+        <span class="kpi-value" id="kpiOrders">0</span>
+      </div>
+      <div class="kpi-card">
+        <i data-lucide="package" class="kpi-icon"></i>
+        <span class="kpi-title">Active Products</span>
+        <span class="kpi-value" id="kpiProducts">0</span>
+      </div>
+      <div class="kpi-card">
+        <i data-lucide="users" class="kpi-icon"></i>
+        <span class="kpi-title">Total Customers</span>
+        <span class="kpi-value" id="kpiUsers">0</span>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Line Chart (Full Width) -->
+      <div class="chart-card full-width">
+        <h3 class="chart-title">Revenue Timeline</h3>
+        <div class="chart-container" style="height: 400px;">
+          <canvas id="revenueLineChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Bar Chart -->
+      <div class="chart-card span-2">
+        <h3 class="chart-title">Category Distribution</h3>
+        <div class="chart-container">
+          <canvas id="categoryBarChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Pie Chart -->
+      <div class="chart-card span-1">
+        <h3 class="chart-title">Order Fulfillment</h3>
+        <div class="chart-container">
+          <canvas id="statusPieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+  <%- include('partials/scripts') %>
+  <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>
