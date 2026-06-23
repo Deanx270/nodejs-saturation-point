@@ -7,7 +7,7 @@ exports.createTransaction = async (req, res) => {
 
   try {
     const { items, paymentMethod } = req.body;
-    const userId = req.user.id; // Protected by verifyToken
+    const userId = req.user.id;
 
     if (!items || items.length === 0) {
       await t.rollback();
@@ -19,13 +19,12 @@ exports.createTransaction = async (req, res) => {
 
     for (const item of items) {
       const product = await Product.findByPk(item.productId, { transaction: t });
-      
+
       if (!product) {
         await t.rollback();
         return res.status(400).json({ error: `Product ID ${item.productId} not found` });
       }
 
-      // Stock Depletion Safeguard
       if (item.quantity > product.stock) {
         await t.rollback();
         return res.status(400).json({ error: `Insufficient stock for ${product.name}. Only ${product.stock} left.` });
@@ -38,16 +37,13 @@ exports.createTransaction = async (req, res) => {
         priceAtPurchase: product.price
       });
 
-      // Deduct stock securely
       product.stock -= item.quantity;
       await product.save({ transaction: t });
     }
 
-    // Add Flat Shipping Rate
     const shippingFee = 150;
     totalAmount += shippingFee;
 
-    // Create parent transaction
     const transaction = await Transaction.create({
       userId,
       totalAmount,
@@ -55,7 +51,6 @@ exports.createTransaction = async (req, res) => {
       paymentMethod: paymentMethod || 'Credit Card'
     }, { transaction: t });
 
-    // Create transaction items
     for (const ti of transactionItemsData) {
       await TransactionItem.create({
         transactionId: transaction.id,
@@ -126,7 +121,6 @@ exports.updateTransactionStatus = async (req, res) => {
       return res.status(400).json({ error: 'Cannot modify an order that has already been delivered.' });
     }
 
-    // New state machine rules
     if (status === 'delivered' && transaction.status !== 'shipped') {
       await t.rollback();
       return res.status(400).json({ error: 'An order must be shipped before it can be delivered.' });
@@ -153,7 +147,6 @@ exports.updateTransactionStatus = async (req, res) => {
     await t.commit();
     res.json({ message: 'Transaction status updated successfully', transaction });
 
-    // Asynchronous Email Dispatch
     if (status === 'shipped' || status === 'delivered' || status === 'cancelled') {
       if (transaction.User && transaction.User.email) {
         generateReceiptPdf(transaction)

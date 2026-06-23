@@ -24,7 +24,7 @@ const Product = sequelize.define('Product', {
     defaultValue: 0,
   },
   images: {
-    type: DataTypes.TEXT, // Storing JSON array of image URLs
+    type: DataTypes.TEXT,
     allowNull: true,
     get() {
       const rawValue = this.getDataValue('images');
@@ -36,11 +36,11 @@ const Product = sequelize.define('Product', {
   },
   categoryId: {
     type: DataTypes.STRING,
-    allowNull: false, // E.g., 'pen', 'ink', 'paper'
+    allowNull: false,
   },
   brandId: {
     type: DataTypes.UUID,
-    allowNull: false, // Foreign key
+    allowNull: false,
   }
 }, {
   timestamps: true,

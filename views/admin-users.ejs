@@ -1,108 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <%- include('partials/head') %>
 </head>
+
 <body style="display: none;">
 
   <%- include('partials/header') %>
 
-  <%- include('partials/admin-subnav') %>
+    <%- include('partials/admin-subnav') %>
 
-  <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
-    <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-      <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">User Management</h2>
-      <button id="addUserBtn" class="btn-submit" style="width: auto; margin: 0; padding: 12px 32px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
-        <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add User
-      </button>
-    </div>
-      <div style="overflow-x: auto;">
-        <table id="usersTable" class="display" style="width:100%">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Data populated via AJAX -->
-          </tbody>
-        </table>
+      <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
+        <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">User Management</h2>
+            <button id="addUserBtn" class="btn-submit"
+              style="width: auto; margin: 0; padding: 12px 32px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add User
+            </button>
+          </div>
+          <div style="overflow-x: auto;">
+            <table id="usersTable" class="display" style="width:100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <div class="modal-overlay" id="userModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="brand-font" id="modalTitle" style="font-size: 1.5rem; margin: 0;">Add User</h3>
+            <button type="button" class="close-modal" id="closeModal"
+              style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i data-lucide="x"
+                style="width: 24px; height: 24px;"></i></button>
+          </div>
+          <div class="modal-body">
+            <form id="userForm">
+              <input type="hidden" id="userId" name="id">
+              <div class="form-group">
+                <label class="form-label" for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" class="form-control">
+              </div>
+              <div class="form-group" id="emailGroup">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control">
+              </div>
+              <div class="form-group" id="passwordGroup">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control">
+              </div>
+              <div class="form-group" id="roleGroup">
+                <label class="form-label" for="role">Role</label>
+                <select id="role" name="role" class="form-control action-select"
+                  style="width: 100%; border-bottom: 1px solid rgba(28, 25, 23, 0.2); border-radius: 0;">
+                  <option value="customer">Customer</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <button type="submit" class="btn-submit">Save User</button>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
-  </main>
 
-  <!-- User Modal -->
-  <div class="modal-overlay" id="userModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="brand-font" id="modalTitle" style="font-size: 1.5rem; margin: 0;">Add User</h3>
-        <button type="button" class="close-modal" id="closeModal" style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i data-lucide="x" style="width: 24px; height: 24px;"></i></button>
-      </div>
-      <div class="modal-body">
-        <form id="userForm">
-          <input type="hidden" id="userId" name="id">
-          <div class="form-group">
-            <label class="form-label" for="firstName">First Name</label>
-            <input type="text" id="firstName" name="firstName" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="lastName">Last Name</label>
-            <input type="text" id="lastName" name="lastName" class="form-control">
-          </div>
-          <div class="form-group" id="emailGroup">
-            <label class="form-label" for="email">Email</label>
-            <input type="email" id="email" name="email" class="form-control">
-          </div>
-          <div class="form-group" id="passwordGroup">
-            <label class="form-label" for="password">Password</label>
-            <input type="password" id="password" name="password" class="form-control">
-          </div>
-          <div class="form-group" id="roleGroup">
-            <label class="form-label" for="role">Role</label>
-            <select id="role" name="role" class="form-control action-select" style="width: 100%; border-bottom: 1px solid rgba(28, 25, 23, 0.2); border-radius: 0;">
-              <option value="customer">Customer</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-submit">Save User</button>
-        </form>
-      </div>
-    </div>
-  </div>
+      <%- include('partials/footer') %>
 
-  <!-- Premium Footer -->
-  <%- include('partials/footer') %>
-
-  <%- include('partials/scripts') %>
-  <script src="/js/admin-users.js"></script>
-  <script>
-    lucide.createIcons();
-    // Additional Logout Logic for Admin Page
-    $(document).on('click', '#logoutBtn', function(e) {
-      e.preventDefault();
-      const token = localStorage.getItem('token');
-      if (token) {
-        $.ajax({
-          url: '/api/auth/logout',
-          type: 'POST',
-          headers: { 'Authorization': 'Bearer ' + token },
-          success: function() {
-            localStorage.clear();
-            window.location.href = '/';
-          },
-          error: function() {
-            localStorage.clear();
-            window.location.href = '/';
-          }
-        });
-      }
-    });
-  </script>
+        <%- include('partials/scripts') %>
+          <script src="/js/admin-users.js"></script>
+          <script>
+            lucide.createIcons();
+            $(document).on('click', '#logoutBtn', function (e) {
+              e.preventDefault();
+              const token = localStorage.getItem('token');
+              if (token) {
+                $.ajax({
+                  url: '/api/auth/logout',
+                  type: 'POST',
+                  headers: { 'Authorization': 'Bearer ' + token },
+                  success: function () {
+                    localStorage.clear();
+                    window.location.href = '/';
+                  },
+                  error: function () {
+                    localStorage.clear();
+                    window.location.href = '/';
+                  }
+                });
+              }
+            });
+          </script>
 </body>
+
 </html>

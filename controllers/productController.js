@@ -1,12 +1,9 @@
 const { Product, Brand } = require('../models');
 
-// @desc    Get all products
-// @route   GET /api/products
-// @access  Public
 exports.getProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 12; // default 12 per page
+    const limit = parseInt(req.query.limit, 10) || 12;
     const offset = (page - 1) * limit;
 
     const { Op } = require('sequelize');
@@ -49,14 +46,11 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// @desc    Search products by name
-// @route   GET /api/products/search?q=
-// @access  Public
 exports.searchProducts = async (req, res) => {
   try {
     const { q } = req.query;
     if (!q) return res.json([]);
-    
+
     const { Op } = require('sequelize');
     const products = await Product.findAll({
       where: {
@@ -80,8 +74,8 @@ exports.getProductById = async (req, res) => {
     const product = await Product.findByPk(req.params.id, {
       include: [
         { model: Brand, as: 'Brand' },
-        { 
-          model: Review, 
+        {
+          model: Review,
           include: [{ model: User, attributes: ['firstName', 'lastName', 'profilePicture'] }],
           order: [['createdAt', 'DESC']]
         }
@@ -89,13 +83,12 @@ exports.getProductById = async (req, res) => {
     });
     if (!product) return res.status(404).json({ error: 'Product not found' });
 
-    // Calculate average rating
     let averageRating = 0;
     if (product.Reviews && product.Reviews.length > 0) {
       const sum = product.Reviews.reduce((acc, rev) => acc + rev.rating, 0);
       averageRating = (sum / product.Reviews.length).toFixed(1);
     }
-    
+
     const prodData = product.toJSON();
     prodData.averageRating = averageRating;
 
@@ -111,18 +104,16 @@ exports.addReview = async (req, res) => {
     const { rating, comment } = req.body;
     const productId = req.params.id;
     const userId = req.user.id;
-    
+
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({ error: 'Rating must be between 1 and 5' });
     }
 
     const { Review, Transaction, TransactionItem } = require('../models');
 
-    // 1. Check if product exists
     const product = await Product.findByPk(productId);
     if (!product) return res.status(404).json({ error: 'Product not found' });
 
-    // 2. Strict Validation: User must have a transaction containing this productId with status 'delivered'
     const hasPurchased = await Transaction.findOne({
       where: { userId, status: 'delivered' },
       include: [{
@@ -136,9 +127,8 @@ exports.addReview = async (req, res) => {
       return res.status(403).json({ error: 'You can only review products you have purchased and received.' });
     }
 
-    // 3. Check for existing review to update
     const existingReview = await Review.findOne({ where: { userId, productId } });
-    
+
     const { censorFoulWords } = require('../utils/censor');
     const censoredComment = censorFoulWords(comment);
     if (existingReview) {
@@ -148,7 +138,6 @@ exports.addReview = async (req, res) => {
       return res.json({ message: 'Review updated successfully', review: existingReview });
     }
 
-    // 4. Create Review
     const review = await Review.create({
       rating,
       comment: censoredComment,
@@ -170,13 +159,11 @@ exports.checkCanReview = async (req, res) => {
     const userId = req.user.id;
     const { Transaction, TransactionItem, Review } = require('../models');
 
-    // 1. Check if already reviewed
     const existingReview = await Review.findOne({ where: { userId, productId } });
     if (existingReview) {
       return res.json({ canReview: false, reason: 'already_reviewed', existingReview });
     }
 
-    // 2. Check if purchased and delivered
     const hasPurchased = await Transaction.findOne({
       where: { userId, status: 'delivered' },
       include: [{
@@ -244,7 +231,6 @@ exports.updateProduct = async (req, res) => {
         console.error("Error parsing imageOrder", e);
       }
     } else {
-      // Fallback
       if (req.files && req.files.length > 0) {
         finalImages = req.files.map(file => `/images/uploads/${file.filename}`);
       }
@@ -264,7 +250,7 @@ exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });
-    
+
     await product.destroy();
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {

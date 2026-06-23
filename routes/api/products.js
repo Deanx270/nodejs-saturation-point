@@ -5,7 +5,6 @@ const { verifyToken, isAdmin } = require('../../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 
-// Multer Config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/images/uploads/');
@@ -18,7 +17,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -28,16 +27,14 @@ const upload = multer({
   }
 });
 
-// Public route for catalog
 router.get('/search', productController.searchProducts);
 router.get('/', productController.getProducts);
-// Reviews
+
 router.get('/:id/can-review', verifyToken, productController.checkCanReview);
 router.post('/:id/reviews', verifyToken, productController.addReview);
 
 router.get('/:id', productController.getProductById);
 
-// Admin Protected Routes
 router.post('/', verifyToken, isAdmin, upload.array('images', 5), productController.createProduct);
 router.put('/:id', verifyToken, isAdmin, upload.array('images', 5), productController.updateProduct);
 router.delete('/:id', verifyToken, isAdmin, productController.deleteProduct);

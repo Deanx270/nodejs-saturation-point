@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   if (window.lucide) { window.lucide.createIcons(); }
 
   const token = localStorage.getItem('token');
@@ -15,7 +15,7 @@ $(document).ready(function() {
       localStorage.removeItem('token');
       window.location.replace('/login');
     }
-  }).on('error.dt', function(e, settings, techNote, message) {
+  }).on('error.dt', function (e, settings, techNote, message) {
     if (settings && settings.jqXHR && settings.jqXHR.status !== 401) {
       Swal.fire('Data Error', 'Failed to load or update data. Access may be restricted.', 'error');
     }
@@ -29,22 +29,22 @@ $(document).ready(function() {
     columns: [
       { data: 'id' },
       { data: 'name' },
-      { 
+      {
         data: 'description',
-        render: function(data) {
+        render: function (data) {
           return data ? (data.length > 50 ? data.substring(0, 50) + '...' : data) : 'No description';
         }
       },
-      { 
+      {
         data: 'productCount',
-        render: function(data) {
+        render: function (data) {
           return `<span class="badge" style="background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border-subtle);">${data || 0} Products</span>`;
         }
       },
       {
         data: null,
         orderable: false,
-        render: function(data, type, row) {
+        render: function (data, type, row) {
           return `
             <div style="display:flex; gap: 8px;">
               <button class="edit-btn" data-id="${row.id}" style="background:none;border:none;cursor:pointer;color:var(--text-main); transition: color 0.2s;" title="Edit">
@@ -58,13 +58,12 @@ $(document).ready(function() {
         }
       }
     ],
-    drawCallback: function() {
-      if(window.lucide) { lucide.createIcons(); }
+    drawCallback: function () {
+      if (window.lucide) { lucide.createIcons(); }
     }
   });
 
-  // Modal Actions
-  $('#addCategoryBtn').click(function() {
+  $('#addCategoryBtn').click(function () {
     $('#isEdit').val('false');
     $('#modalTitle').text('Add Category');
     $('#categoryForm')[0].reset();
@@ -72,31 +71,28 @@ $(document).ready(function() {
     $('#categoryModal').addClass('active');
   });
 
-  $('#closeCategoryModal').click(function() {
+  $('#closeCategoryModal').click(function () {
     $('#categoryModal').removeClass('active');
   });
 
-  // Edit action
-  $('#categoriesTable').on('click', '.edit-btn', function() {
+  $('#categoriesTable').on('click', '.edit-btn', function () {
     const id = $(this).data('id');
     const rowData = table.row($(this).parents('tr')).data();
-    
+
     $('#isEdit').val('true');
     $('#modalTitle').text('Edit Category');
-    // Store original ID securely to prevent URL tampering via Inspect Element
     $('#categoryForm').data('original-id', rowData.id);
-    
+
     $('#categoryId').val(rowData.id).prop('readonly', true).css('background', '#f3f4f6');
     $('#categoryName').val(rowData.name);
     $('#categoryDescription').val(rowData.description);
-    
+
     $('#categoryModal').addClass('active');
   });
 
-  // Save (Create/Update)
-  $('#categoryForm').submit(function(e) {
+  $('#categoryForm').submit(function (e) {
     e.preventDefault();
-    
+
     const isEdit = $('#isEdit').val() === 'true';
     const id = $('#categoryId').val().trim();
     const name = $('#categoryName').val().trim();
@@ -111,14 +107,13 @@ $(document).ready(function() {
     }
 
     const payload = { id, name, description };
-    
-    // Construct URL safely using the hidden original ID if editing
+
     let url = '/api/categories';
     if (isEdit) {
       const originalId = $('#categoryForm').data('original-id');
       url = `/api/categories/${originalId}`;
     }
-    
+
     const type = isEdit ? 'PUT' : 'POST';
 
     const btn = $('#saveCategoryBtn');
@@ -131,23 +126,22 @@ $(document).ready(function() {
       contentType: 'application/json',
       headers: { 'Authorization': 'Bearer ' + token },
       data: JSON.stringify(payload),
-      success: function(response) {
+      success: function (response) {
         $('#categoryModal').removeClass('active');
         table.ajax.reload(null, false);
         showToast(isEdit ? 'Category updated successfully' : 'Category created successfully');
       },
-      error: function(err) {
+      error: function (err) {
         const msg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to save category';
         showToast(msg, 'error');
       },
-      complete: function() {
+      complete: function () {
         btn.text(originalText).prop('disabled', false);
       }
     });
   });
 
-  // Delete Action
-  $('#categoriesTable').on('click', '.delete-btn', function() {
+  $('#categoriesTable').on('click', '.delete-btn', function () {
     const id = $(this).data('id');
     const count = parseInt($(this).data('count') || 0);
 
@@ -178,12 +172,12 @@ $(document).ready(function() {
           url: `/api/categories/${id}`,
           type: 'DELETE',
           headers: { 'Authorization': 'Bearer ' + token },
-          success: function(res) {
+          success: function (res) {
             table.ajax.reload(null, false);
             const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' } });
             Toast.fire({ icon: 'success', title: 'Category deleted' });
           },
-          error: function(err) {
+          error: function (err) {
             const errorMsg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Delete failed';
             Swal.fire({
               title: 'Error',

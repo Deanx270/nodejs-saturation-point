@@ -2,20 +2,18 @@ const { Transaction, TransactionItem, Product, Category, sequelize } = require('
 
 exports.getDashboardStats = async (req, res) => {
   try {
-    // 1. Revenue by Month (Line Chart)
     const revenueData = await Transaction.findAll({
       attributes: [
         [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m'), 'month'],
         [sequelize.fn('SUM', sequelize.col('totalAmount')), 'revenue']
       ],
       where: {
-        status: ['shipped', 'delivered'] // Only count realized revenue
+        status: ['shipped', 'delivered']
       },
       group: ['month'],
       order: [['month', 'ASC']]
     });
 
-    // 2. Products by Category (Bar Chart)
     const productsByCategory = await Category.findAll({
       attributes: [
         'name',
@@ -29,7 +27,6 @@ exports.getDashboardStats = async (req, res) => {
       raw: true
     });
 
-    // 3. Transactions by Status (Pie Chart)
     const transactionsByStatus = await Transaction.findAll({
       attributes: [
         'status',
@@ -39,11 +36,10 @@ exports.getDashboardStats = async (req, res) => {
       raw: true
     });
 
-    // 4. KPI Stats
     const { Op } = require('sequelize');
     const totalRevenueResult = await Transaction.sum('totalAmount', { where: { status: { [Op.ne]: 'cancelled' } } });
     const totalRevenue = totalRevenueResult || 0;
-    
+
     const totalOrders = await Transaction.count();
     const activeProducts = await Product.count();
     const { User } = require('../models');

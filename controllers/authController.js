@@ -18,20 +18,16 @@ exports.register = async (req, res) => {
       profilePicture = '/images/uploads/' + req.file.filename;
     }
 
-    // Check if user exists
     const userExists = await User.findOne({ where: { email } });
     if (userExists) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate Verification Token
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    // Create user with pending status
     const user = await User.create({
       firstName,
       lastName,
@@ -43,7 +39,6 @@ exports.register = async (req, res) => {
     });
 
     if (user) {
-      // Send Email
       await sendVerificationEmail(user.email, verificationToken, user.firstName, user.lastName);
 
       res.status(201).json({
@@ -61,7 +56,7 @@ exports.register = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.query;
-    
+
     if (!token) {
       return res.status(400).send('Invalid verification link.');
     }
@@ -87,11 +82,10 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check for user email
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-       return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     if (await bcrypt.compare(password, user.password)) {
@@ -102,7 +96,6 @@ exports.login = async (req, res) => {
         return res.status(403).json({ error: 'Please verify your email address before logging in.' });
       }
 
-      // Generate token and save to DB
       const token = generateToken(user.id);
       user.token = token;
       await user.save();
@@ -129,7 +122,6 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    // If we want to strictly invalidate the token, we remove it from the DB
     if (req.user) {
       const user = await User.findByPk(req.user.id);
       if (user) {
@@ -137,10 +129,9 @@ exports.logout = async (req, res) => {
         await user.save();
       }
     }
-    
-    // Also destroy session if using express-session
+
     req.session.destroy();
-    
+
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error(error);

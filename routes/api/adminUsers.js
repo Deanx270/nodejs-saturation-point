@@ -3,7 +3,6 @@ const router = express.Router();
 const adminUserController = require('../../controllers/adminUserController');
 const { verifyToken, isAdmin } = require('../../middleware/auth');
 
-// Apply middleware to all routes in this file
 router.use(verifyToken, isAdmin);
 
 router.route('/')

@@ -1,80 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <%- include('partials/head') %>
 </head>
+
 <body style="display: none;">
 
   <%- include('partials/header') %>
 
-  <%- include('partials/admin-subnav') %>
+    <%- include('partials/admin-subnav') %>
 
-  <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
-    <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-        <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">Brand Management</h2>
-        <button id="addBrandBtn" class="btn-submit" style="width: auto; margin: 0; padding: 12px 32px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Brand
-        </button>
-      </div>
-      <div style="overflow-x: auto;">
-        <table id="brandsTable" class="display" style="width:100%">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Origin</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
+      <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
+        <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">Brand Management</h2>
+            <button id="addBrandBtn" class="btn-submit"
+              style="width: auto; margin: 0; padding: 12px 32px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Brand
+            </button>
+          </div>
+          <div style="overflow-x: auto;">
+            <table id="brandsTable" class="display" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Origin</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
 
-  <!-- Modal -->
-  <div class="modal-overlay" id="brandModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="brand-font" id="modalTitle" style="font-size: 1.5rem; margin: 0;">Add Brand</h3>
-        <button type="button" class="close-modal" id="closeModal" style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i data-lucide="x" style="width: 24px; height: 24px;"></i></button>
+      <div class="modal-overlay" id="brandModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="brand-font" id="modalTitle" style="font-size: 1.5rem; margin: 0;">Add Brand</h3>
+            <button type="button" class="close-modal" id="closeModal"
+              style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i data-lucide="x"
+                style="width: 24px; height: 24px;"></i></button>
+          </div>
+          <div class="modal-body">
+            <form id="brandForm">
+              <input type="hidden" id="brandId" name="id">
+              <div class="form-group">
+                <label for="name" class="form-label">Brand Name</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="origin" class="form-label">Origin (e.g. Japan, Germany)</label>
+                <input type="text" id="origin" name="origin" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" class="form-control action-select"
+                  style="width: 100%; border-bottom: 1px solid rgba(28, 25, 23, 0.2); border-radius: 0;">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <button type="submit" class="btn-submit">Save Brand</button>
+            </form>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-        <form id="brandForm">
-          <input type="hidden" id="brandId" name="id">
-          <div class="form-group">
-            <label for="name" class="form-label">Brand Name</label>
-            <input type="text" id="name" name="name" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label for="origin" class="form-label">Origin (e.g. Japan, Germany)</label>
-            <input type="text" id="origin" name="origin" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="description" class="form-label">Description</label>
-            <textarea id="description" name="description" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="status" class="form-label">Status</label>
-            <select id="status" name="status" class="form-control action-select" style="width: 100%; border-bottom: 1px solid rgba(28, 25, 23, 0.2); border-radius: 0;">
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-submit">Save Brand</button>
-        </form>
-      </div>
-    </div>
-  </div>
 
-  <%- include('partials/footer') %>
+      <%- include('partials/footer') %>
 
-  <%- include('partials/scripts') %>
-  <script src="/js/admin-brands.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+        <%- include('partials/scripts') %>
+          <script src="/js/admin-brands.js"></script>
+          <script>
+            lucide.createIcons();
+          </script>
 </body>
+
 </html>

@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
-// Verify JWT token middleware
 const verifyToken = async (req, res, next) => {
   let token = req.headers.authorization;
-  
+
   if (token && token.startsWith('Bearer ')) {
     token = token.slice(7, token.length);
   }
@@ -16,11 +15,11 @@ const verifyToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'premium_pen_secret');
     const user = await User.findByPk(decoded.id);
-    
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid Token. User not found.' });
     }
-    
+
     if (user.status === 'deactivated') {
       return res.status(403).json({ error: 'Your account has been deactivated.' });
     }
@@ -32,7 +31,6 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-// Check if user is admin middleware
 const isAdmin = (req, res, next) => {
   if (req.user && (req.user.role === 'admin' || req.user.role === 'head_admin')) {
     next();

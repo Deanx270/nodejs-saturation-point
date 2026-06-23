@@ -9,7 +9,7 @@ const Transaction = sequelize.define('Transaction', {
   },
   userId: {
     type: DataTypes.UUID,
-    allowNull: false, // Foreign key
+    allowNull: false,
   },
   totalAmount: {
     type: DataTypes.DECIMAL(10, 2),

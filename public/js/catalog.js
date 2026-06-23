@@ -10,13 +10,11 @@ $(document).ready(function () {
   const grid = $('#productGrid');
   const spinner = $('#catalogSpinner');
 
-  // URL Param Parsing for category
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('category')) {
     $('#categoryFilter').val(urlParams.get('category'));
   }
 
-  // Load Brands for filter
   $.ajax({
     url: '/api/brands',
     type: 'GET',
@@ -105,17 +103,13 @@ $(document).ready(function () {
     });
   }
 
-  // Initial load
   loadProducts(currentPage);
 
-  // Filter Logic
-  // Filter Menu Toggle
   $('#toggleFilterMenu').on('click', function (e) {
     e.stopPropagation();
     $('#filterMenu').toggleClass('show');
   });
 
-  // Close filter menu when clicking outside
   $(document).on('click', function (e) {
     if (!$(e.target).closest('.filter-dropdown-container').length) {
       $('#filterMenu').removeClass('show');
@@ -137,16 +131,14 @@ $(document).ready(function () {
     searchTimeout = setTimeout(applyFilters, 400);
   });
 
-  // Infinite Scroll Listener
   $(window).on('scroll', function () {
     if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
       loadProducts(currentPage);
     }
   });
 
-  // Add to Cart Logic
   grid.on('click', '.add-to-cart', function (e) {
-    e.preventDefault(); // Prevents navigating to /product/:id
+    e.preventDefault();
     const btn = $(this);
     const id = btn.data('id');
     const name = btn.data('name');
@@ -164,13 +156,11 @@ $(document).ready(function () {
 
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Update Badge
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const badge = $('#cartBadge');
     badge.text(totalItems).css('display', 'inline-flex').addClass('bump');
     setTimeout(() => badge.removeClass('bump'), 300);
 
-    // Toast Feedback
     const Toast = Swal.mixin({
       toast: true,
       position: 'bottom-end',

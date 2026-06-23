@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   const token = localStorage.getItem('token');
   if (!token) {
     window.location.href = '/login';
@@ -7,12 +7,10 @@ $(document).ready(function() {
 
   $('body').fadeIn(200);
 
-  // Chart.js Global Settings for Premium Feel
   Chart.defaults.font.family = "'Inter', sans-serif";
-  Chart.defaults.color = '#636E72'; // Slate Gray for text
-  Chart.defaults.scale.grid.color = 'rgba(226, 232, 240, 0.5)'; // Very subtle grid lines
-  
-  // Custom Tooltip Configuration
+  Chart.defaults.color = '#636E72';
+  Chart.defaults.scale.grid.color = 'rgba(226, 232, 240, 0.5)';
+
   const premiumTooltip = {
     backgroundColor: '#1B263B',
     titleColor: '#FAF9F6',
@@ -32,19 +30,19 @@ $(document).ready(function() {
     type: 'GET',
     cache: false,
     headers: { 'Authorization': 'Bearer ' + token },
-    success: function(data) {
+    success: function (data) {
       renderRevenueChart(data.revenue);
       renderCategoryChart(data.categories);
       renderStatusChart(data.statusDistribution);
-      
+
       if (data.kpis) {
-        $('#kpiRevenue').text('₱' + parseFloat(data.kpis.totalRevenue).toLocaleString('en-US', {minimumFractionDigits: 2}));
+        $('#kpiRevenue').text('₱' + parseFloat(data.kpis.totalRevenue).toLocaleString('en-US', { minimumFractionDigits: 2 }));
         $('#kpiOrders').text(data.kpis.totalOrders.toLocaleString());
         $('#kpiProducts').text(data.kpis.activeProducts.toLocaleString());
         $('#kpiUsers').text(data.kpis.totalUsers.toLocaleString());
       }
     },
-    error: function(err) {
+    error: function (err) {
       console.error('Failed to load dashboard stats', err);
       showToast('Failed to load dashboard statistics', 'error');
     }
@@ -52,24 +50,22 @@ $(document).ready(function() {
 
   function renderRevenueChart(revenueData) {
     const ctx = document.getElementById('revenueLineChart').getContext('2d');
-    
-    // Default to empty if no data
+
     let labels = [];
     let dataPoints = [];
-    
+
     if (revenueData && revenueData.length > 0) {
       labels = revenueData.map(item => item.month);
       dataPoints = revenueData.map(item => parseFloat(item.revenue));
     } else {
-      // Dummy data for empty state
       const date = new Date();
       labels = [`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`];
       dataPoints = [0];
     }
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)'); // Gold gradient start
-    gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)'); // Transparent end
+    gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
+    gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
 
     new Chart(ctx, {
       type: 'line',
@@ -78,16 +74,16 @@ $(document).ready(function() {
         datasets: [{
           label: 'Realized Revenue (₱)',
           data: dataPoints,
-          borderColor: '#D4AF37', // Classic Gold
+          borderColor: '#D4AF37',
           backgroundColor: gradient,
           borderWidth: 3,
-          pointBackgroundColor: '#1B263B', // Deep Blue Ink dots
+          pointBackgroundColor: '#1B263B',
           pointBorderColor: '#FFF',
           pointBorderWidth: 2,
           pointRadius: 5,
           pointHoverRadius: 7,
           fill: true,
-          tension: 0.4 // Smooth curves
+          tension: 0.4
         }]
       },
       options: {
@@ -102,7 +98,7 @@ $(document).ready(function() {
             beginAtZero: true,
             grid: { color: 'rgba(0,0,0,0.05)' },
             ticks: {
-              callback: function(value) {
+              callback: function (value) {
                 return '₱' + value.toLocaleString();
               }
             }
@@ -117,10 +113,10 @@ $(document).ready(function() {
 
   function renderCategoryChart(categoryData) {
     const ctx = document.getElementById('categoryBarChart').getContext('2d');
-    
+
     let labels = ['No Data'];
     let dataPoints = [0];
-    
+
     if (categoryData && categoryData.length > 0) {
       labels = categoryData.map(item => item.name);
       dataPoints = categoryData.map(item => parseInt(item.count));
@@ -133,7 +129,7 @@ $(document).ready(function() {
         datasets: [{
           label: 'Products Count',
           data: dataPoints,
-          backgroundColor: '#1B263B', // Deep Blue Ink
+          backgroundColor: '#1B263B',
           hoverBackgroundColor: '#2b3c5a',
           borderRadius: 6,
           barThickness: 'flex',
@@ -163,19 +159,18 @@ $(document).ready(function() {
 
   function renderStatusChart(statusData) {
     const ctx = document.getElementById('statusPieChart').getContext('2d');
-    
+
     let labels = ['No Data'];
     let dataPoints = [1];
-    
-    // Status colors strictly using Brand Palette
+
     const colorMap = {
-      'pending': '#D4AF37',   // Classic Gold
-      'shipped': '#1B263B',   // Deep Blue Ink
-      'delivered': '#636E72', // Slate Gray
-      'cancelled': '#E2E8F0'  // Muted light color to avoid harsh red
+      'pending': '#D4AF37',
+      'shipped': '#1B263B',
+      'delivered': '#636E72',
+      'cancelled': '#E2E8F0'
     };
 
-    let backgroundColors = ['#FAF9F6']; // Soft Alabaster for empty space
+    let backgroundColors = ['#FAF9F6'];
 
     if (statusData && statusData.length > 0) {
       labels = statusData.map(item => item.status.charAt(0).toUpperCase() + item.status.slice(1));

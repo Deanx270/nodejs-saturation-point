@@ -12,7 +12,6 @@
 
       .star-rating i {
         color: #D1D5DB;
-        /* Grey outline */
         transition: color 0.2s ease, fill 0.2s ease;
         width: 28px;
         height: 28px;
@@ -35,7 +34,6 @@
   <%- include('partials/header') %>
 
     <main class="container" style="padding-top: 40px; padding-bottom: 120px;">
-      <!-- Breadcrumb -->
       <div
         style="margin-bottom: 24px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: var(--text-muted);">
         <a href="/catalog" style="color: var(--text-muted); text-decoration: none;">Catalog</a> / <span
@@ -43,7 +41,6 @@
       </div>
 
       <div class="product-page-container" id="productContainer" style="display: none;">
-        <!-- Left: Gallery -->
         <div class="product-gallery" style="width: 100%;">
           <div
             style="aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; border-radius: 8px; overflow: hidden; background: #fff;">
@@ -52,11 +49,9 @@
           </div>
           <div class="product-thumbnails" id="thumbnailGrid"
             style="display: flex; flex-direction: row; gap: 10px; overflow-x: auto; margin-top: 16px;">
-            <!-- Thumbnails injected here -->
           </div>
         </div>
 
-        <!-- Right: Details -->
         <div class="product-details">
           <div class="product-brand" id="brandName"></div>
           <h1 class="product-title brand-font" id="productName"></h1>
@@ -108,7 +103,6 @@
         </div>
       </div>
 
-      <!-- Customer Reviews Section (Full Width) -->
       <section class="reviews-section"
         style="padding-top: 3rem; border-top: 1px solid rgba(27,38,59,0.1); display: none;" id="reviewsSection">
         <h2 class="brand-font" style="font-size: 2.5rem; margin-bottom: 32px; color: var(--text-main);">Customer Reviews
@@ -183,7 +177,6 @@
 
         <div id="reviewsList"
           style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
-          <!-- Reviews injected here -->
         </div>
       </section>
       </div>
@@ -228,7 +221,6 @@
                   $('#qtyPlus, #qtyMinus').prop('disabled', true).css({ opacity: 0.5, cursor: 'not-allowed' });
                 }
 
-                // Render Rating
                 $('#productRatingUI').show();
                 if (product.averageRating > 0) {
                   $('#ratingStarIcon').show();
@@ -240,11 +232,9 @@
                   $('#totalReviewsText').text('Be the first to review');
                 }
 
-                // Render Reviews
                 $('#reviewsSection').show();
                 const reviewsList = $('#reviewsList');
 
-                // Extract current user ID from token to sort reviews
                 const token = localStorage.getItem('token');
                 let currentUserId = null;
                 if (token) {
@@ -254,7 +244,6 @@
                 }
 
                 if (product.Reviews && product.Reviews.length > 0) {
-                  // Sort reviews: Current user's review first, then by date descending
                   product.Reviews.sort((a, b) => {
                     if (a.User.id === currentUserId) return -1;
                     if (b.User.id === currentUserId) return 1;
@@ -312,7 +301,6 @@
                   reviewsList.html('<div style="grid-column: 1 / -1;"><p style="color: var(--text-muted); font-family: \\"Montserrat\\", sans-serif; font-size: 1.05rem;">No reviews yet. Be the first to review this product!</p></div>');
                 }
 
-                // Gallery Setup
                 const images = product.images && product.images.length > 0 ? product.images : ['/images/hero_luxury_pen.png'];
                 $('#mainImage').attr('src', images[0]);
 
@@ -323,7 +311,6 @@
                     thumbGrid.append(`<img src="${imgUrl}" class="thumb-img ${activeClass}" data-url="${imgUrl}" alt="Thumbnail">`);
                   });
 
-                  // Thumbnail Click Logic
                   $('.thumb-img').on('click', function () {
                     $('.thumb-img').removeClass('active');
                     $(this).addClass('active');
@@ -346,7 +333,6 @@
               }
             });
 
-            // Quantity Logic
             $('#qtyMinus').on('click', function () {
               let val = parseInt($('#qtyInput').val());
               if (val > 1) $('#qtyInput').val(val - 1);
@@ -358,7 +344,6 @@
               }
             });
 
-            // Add to Cart
             $('#btnAddToCart').on('click', function () {
               if (!productData || productData.stock === 0) return;
 
@@ -367,7 +352,6 @@
               const existingItem = cart.find(item => item.id === productData.id);
 
               if (existingItem) {
-                // Check if adding exceeds stock
                 if (existingItem.quantity + qtyToAdd > productData.stock) {
                   const Toast = Swal.mixin({
                     toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' }
@@ -382,23 +366,19 @@
               }
               localStorage.setItem('cart', JSON.stringify(cart));
 
-              // Update Badge
               const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
               const badge = $('#cartBadge');
               badge.text(totalItems).css('display', 'inline-flex').addClass('bump');
               setTimeout(() => badge.removeClass('bump'), 300);
 
-              // Reset Qty Input
               $('#qtyInput').val(1);
 
-              // Toast Feedback
               const Toast = Swal.mixin({
                 toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' }
               });
               Toast.fire({ icon: 'success', title: 'Item added to cart' });
             });
 
-            // --- Review Logic ---
             const token = localStorage.getItem('token');
             if (token) {
               $.ajax({
@@ -429,7 +409,6 @@
             } else {
               $('#loginPromptContainer').show();
             }
-            // Interactive Star Rating
             let currentRating = 0;
 
             $('#starRatingSelector').on('mouseover', 'svg', function () {
@@ -454,12 +433,10 @@
               });
             });
 
-            // Character Counter
             $('#reviewComment').on('input', function () {
               $('#charCount').text($(this).val().length);
             });
 
-            // Submit Review
             $('#reviewForm').submit(function (e) {
               e.preventDefault();
               const rating = parseInt($('#reviewRating').val());

@@ -6,7 +6,6 @@ const { verifyToken, isAdmin } = require('../../middleware/auth');
 router.get('/', categoryController.getAllCategories);
 router.get('/:id', categoryController.getCategoryById);
 
-// Protected routes
 router.post('/', verifyToken, isAdmin, categoryController.createCategory);
 router.put('/:id', verifyToken, isAdmin, categoryController.updateCategory);
 router.delete('/:id', verifyToken, isAdmin, categoryController.deleteCategory);

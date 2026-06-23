@@ -9,11 +9,11 @@ const TransactionItem = sequelize.define('TransactionItem', {
   },
   transactionId: {
     type: DataTypes.UUID,
-    allowNull: false, // Foreign key
+    allowNull: false,
   },
   productId: {
     type: DataTypes.UUID,
-    allowNull: false, // Foreign key
+    allowNull: false,
   },
   quantity: {
     type: DataTypes.INTEGER,

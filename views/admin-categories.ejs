@@ -1,80 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <%- include('partials/head') %>
 </head>
+
 <body style="display: none;">
   <%- include('partials/header') %>
-  <%- include('partials/admin-subnav') %>
-  
-  <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
-    <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-        <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">Category Management</h2>
-        <button id="addCategoryBtn" class="btn-submit" style="margin: 0; width: auto; padding: 12px 24px; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Add Category
-        </button>
+    <%- include('partials/admin-subnav') %>
+
+      <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
+        <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <h2 class="brand-font" style="font-size: 2.5rem; margin: 0;">Category Management</h2>
+            <button id="addCategoryBtn" class="btn-submit"
+              style="margin: 0; width: auto; padding: 12px 24px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Add Category
+            </button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table id="categoriesTable" class="display" style="width:100%">
+              <thead>
+                <tr>
+                  <th>ID (Slug)</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Products Count</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <div class="modal-overlay" id="categoryModal">
+        <div class="modal-content" style="max-width: 500px;">
+          <div class="modal-header">
+            <h3 class="brand-font" id="modalTitle" style="font-size: 1.8rem; margin: 0;">Add Category</h3>
+            <button type="button" class="close-modal" id="closeCategoryModal"
+              style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i
+                data-lucide="x"></i></button>
+          </div>
+          <div class="modal-body">
+            <form id="categoryForm">
+              <input type="hidden" id="isEdit" value="false">
+
+              <div class="form-group">
+                <label class="form-label" for="categoryId">Category ID (Slug) *</label>
+                <input type="text" id="categoryId" name="id" class="form-control"
+                  placeholder="e.g., fountain-pens, ink, paper" required>
+                <small style="color: var(--text-muted); display: block; margin-top: 4px;">Only lowercase letters,
+                  numbers, and hyphens. Cannot be changed later.</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="categoryName">Category Name *</label>
+                <input type="text" id="categoryName" name="name" class="form-control" placeholder="e.g., Fountain Pens"
+                  required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="categoryDescription">Description</label>
+                <textarea id="categoryDescription" name="description" class="form-control" rows="3"
+                  placeholder="Category description..."></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit" id="saveCategoryBtn">Save Category</button>
+            </form>
+          </div>
+        </div>
       </div>
 
-      <div style="overflow-x: auto;">
-        <table id="categoriesTable" class="display" style="width:100%">
-          <thead>
-            <tr>
-              <th>ID (Slug)</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Products Count</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Data injected via DataTables -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-
-  <!-- Add/Edit Category Modal -->
-  <div class="modal-overlay" id="categoryModal">
-    <div class="modal-content" style="max-width: 500px;">
-      <div class="modal-header">
-        <h3 class="brand-font" id="modalTitle" style="font-size: 1.8rem; margin: 0;">Add Category</h3>
-        <button type="button" class="close-modal" id="closeCategoryModal" style="background:none;border:none;cursor:pointer;color:var(--text-main);"><i data-lucide="x"></i></button>
-      </div>
-      <div class="modal-body">
-        <form id="categoryForm">
-          <input type="hidden" id="isEdit" value="false">
-          
-          <div class="form-group">
-            <label class="form-label" for="categoryId">Category ID (Slug) *</label>
-            <input type="text" id="categoryId" name="id" class="form-control" placeholder="e.g., fountain-pens, ink, paper" required>
-            <small style="color: var(--text-muted); display: block; margin-top: 4px;">Only lowercase letters, numbers, and hyphens. Cannot be changed later.</small>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" for="categoryName">Category Name *</label>
-            <input type="text" id="categoryName" name="name" class="form-control" placeholder="e.g., Fountain Pens" required>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" for="categoryDescription">Description</label>
-            <textarea id="categoryDescription" name="description" class="form-control" rows="3" placeholder="Category description..."></textarea>
-          </div>
-          
-          <button type="submit" class="btn-submit" id="saveCategoryBtn">Save Category</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <%- include('partials/footer') %>
-  <%- include('partials/scripts') %>
-  <script src="/js/admin-categories.js"></script>
-  <script>
-    if (window.lucide) {
-      lucide.createIcons();
-    }
-  </script>
+      <%- include('partials/footer') %>
+        <%- include('partials/scripts') %>
+          <script src="/js/admin-categories.js"></script>
+          <script>
+            if (window.lucide) {
+              lucide.createIcons();
+            }
+          </script>
 </body>
+
 </html>

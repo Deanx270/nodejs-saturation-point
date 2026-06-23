@@ -1,15 +1,15 @@
-$(document).ready(function() {
+$(document).ready(function () {
   const SHIPPING_FEE = 150;
-  
+
   function getCart() {
     return JSON.parse(localStorage.getItem('cart') || '[]');
   }
-  
+
   function saveCart(cart) {
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartBadge();
   }
-  
+
   function updateCartBadge() {
     const cart = getCart();
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -27,9 +27,9 @@ $(document).ready(function() {
     const cart = getCart();
     const $cartItemsList = $('#cartItemsList');
     const $orderSummary = $('#orderSummary');
-    
+
     $cartItemsList.empty();
-    
+
     if (cart.length === 0) {
       $cartItemsList.html(`
         <div class="empty-cart-message">
@@ -41,9 +41,9 @@ $(document).ready(function() {
       $orderSummary.hide();
       return;
     }
-    
+
     let subtotal = 0;
-    
+
     cart.forEach((item, index) => {
       subtotal += item.price * item.quantity;
       const $card = $(`
@@ -51,7 +51,7 @@ $(document).ready(function() {
           <img src="${item.imageUrl || '/images/default-product.jpg'}" alt="${item.name}" class="item-thumbnail">
           <div class="item-details">
             <div class="item-title">${item.name}</div>
-            <div class="item-price">₱${parseFloat(item.price).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+            <div class="item-price">₱${parseFloat(item.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
           </div>
           <div class="quantity-controls">
             <button class="qty-btn decrease-qty" data-index="${index}">-</button>
@@ -66,20 +66,20 @@ $(document).ready(function() {
       `);
       $cartItemsList.append($card);
     });
-    
+
     const total = subtotal + SHIPPING_FEE;
-    $('#summarySubtotal').text('₱' + subtotal.toLocaleString(undefined, {minimumFractionDigits: 2}));
-    $('#summaryTotal').text('₱' + total.toLocaleString(undefined, {minimumFractionDigits: 2}));
+    $('#summarySubtotal').text('₱' + subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+    $('#summaryTotal').text('₱' + total.toLocaleString(undefined, { minimumFractionDigits: 2 }));
     $orderSummary.show();
-    
-    $('.increase-qty').off('click').on('click', function() {
+
+    $('.increase-qty').off('click').on('click', function () {
       const idx = $(this).data('index');
       cart[idx].quantity += 1;
       saveCart(cart);
       renderCart();
     });
-    
-    $('.decrease-qty').off('click').on('click', function() {
+
+    $('.decrease-qty').off('click').on('click', function () {
       const idx = $(this).data('index');
       if (cart[idx].quantity > 1) {
         cart[idx].quantity -= 1;
@@ -89,8 +89,8 @@ $(document).ready(function() {
       saveCart(cart);
       renderCart();
     });
-    
-    $('.remove-btn').off('click').on('click', function() {
+
+    $('.remove-btn').off('click').on('click', function () {
       const idx = $(this).data('index');
       cart.splice(idx, 1);
       saveCart(cart);
@@ -105,7 +105,7 @@ $(document).ready(function() {
   renderCart();
   updateCartBadge();
 
-  $('#proceedCheckoutBtn').on('click', function() {
+  $('#proceedCheckoutBtn').on('click', function () {
     const cart = getCart();
     if (cart.length === 0) return;
 
@@ -128,7 +128,7 @@ $(document).ready(function() {
       if (result.isConfirmed) {
         const paymentMethod = 'Cash on Delivery';
         const items = cart.map(item => ({
-          productId: item.id, // Fixed: use item.id correctly
+          productId: item.id,
           quantity: item.quantity
         }));
 
@@ -142,12 +142,12 @@ $(document).ready(function() {
             'Content-Type': 'application/json'
           },
           data: JSON.stringify({ items, paymentMethod }),
-          success: function(res) {
+          success: function (res) {
             localStorage.removeItem('cart');
             updateCartBadge();
             window.location.href = '/checkout-success';
           },
-          error: function(xhr) {
+          error: function (xhr) {
             Swal.fire({
               icon: 'error',
               title: '<span style="font-family: \'Playfair Display\', serif;">Checkout Failed</span>',

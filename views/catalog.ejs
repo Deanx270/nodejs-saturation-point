@@ -18,15 +18,12 @@
 
   <%- include('partials/header') %>
 
-    <!-- Removed padding-top 60px to fix the massive empty gap -->
     <main class="container" style="padding-bottom: 120px;">
 
-      <!-- Tightened the margin below the title so it relates to the search bar -->
       <h2 class="brand-font"
         style="text-align: center; margin-top: 2rem; margin-bottom: 1rem; font-size: 2.5rem; color: var(--text-main);">
         The Complete Catalog</h2>
 
-      <!-- Reduced padding-bottom from 25px to 10px to tighten the gap below -->
       <div class="filter-bar-sticky-container"
         style="position: sticky; top: 85px; z-index: 50; background: transparent; padding: 10px 0 30px 0; pointer-events: none;">
         <div class="filter-bar" style="display: flex; justify-content: center; width: 100%; pointer-events: auto;">
@@ -41,7 +38,6 @@
                 <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px;"></i> Filter
               </button>
               <div id="filterMenu" class="filter-menu">
-                <!-- Filter Dropdowns -->
                 <div class="filter-menu-group">
                   <label class="form-label" style="font-size: 0.8rem;">Category</label>
                   <select class="filter-select" id="categoryFilter" style="width: 100%;">
@@ -86,10 +82,8 @@
         </div>
       </div>
 
-      <!-- Added gap and adjusted grid columns to ensure responsive cards -->
       <div class="bento-grid" id="productGrid"
         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; width: 100%; grid-auto-rows: auto;">
-        <!-- Products will be injected here via AJAX -->
       </div>
       <div id="catalogSpinner" class="luxury-spinner" style="display: none; margin: 2rem auto;"></div>
     </main>

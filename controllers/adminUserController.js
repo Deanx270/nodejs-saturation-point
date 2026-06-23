@@ -1,8 +1,5 @@
 const { User } = require('../models');
 
-// @desc    Get all users
-// @route   GET /api/admin/users
-// @access  Private/Admin
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
@@ -16,36 +13,33 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-// @desc    Update user role
-// @route   PUT /api/admin/users/:id/role
-// @access  Private/Admin
 exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
-    
+
     if (!['admin', 'customer'].includes(role) && role !== 'head_admin') {
       return res.status(400).json({ error: 'Invalid role' });
     }
     if (role === 'head_admin') {
-       return res.status(403).json({ error: 'Cannot upgrade a user to Head Admin via UI' });
+      return res.status(403).json({ error: 'Cannot upgrade a user to Head Admin via UI' });
     }
 
     const user = await User.findByPk(req.params.id);
 
     if (user) {
       if (req.user.id === user.id) {
-         return res.status(400).json({ error: 'You cannot change your own role' });
+        return res.status(400).json({ error: 'You cannot change your own role' });
       }
       if (req.user.role === 'admin' && (user.role === 'admin' || user.role === 'head_admin')) {
-         return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
+        return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
       }
       if (req.user.role === 'head_admin' && user.role === 'head_admin') {
-         return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
+        return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
       }
 
       user.role = role;
       await user.save();
-      
+
       res.json({ message: 'User role updated successfully', user: { id: user.id, firstName: user.firstName, lastName: user.lastName, role: user.role } });
     } else {
       res.status(404).json({ error: 'User not found' });
@@ -56,13 +50,10 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-// @desc    Update user status (deactivate/activate)
-// @route   PUT /api/admin/users/:id/status
-// @access  Private/Admin
 exports.updateUserStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    
+
     if (!['active', 'deactivated'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }
@@ -71,18 +62,18 @@ exports.updateUserStatus = async (req, res) => {
 
     if (user) {
       if (req.user.id === user.id) {
-         return res.status(400).json({ error: 'You cannot change your own status' });
+        return res.status(400).json({ error: 'You cannot change your own status' });
       }
       if (req.user.role === 'admin' && (user.role === 'admin' || user.role === 'head_admin')) {
-         return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
+        return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
       }
       if (req.user.role === 'head_admin' && user.role === 'head_admin') {
-         return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
+        return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
       }
 
       user.status = status;
       await user.save();
-      
+
       res.json({ message: 'User status updated successfully', user: { id: user.id, firstName: user.firstName, lastName: user.lastName, status: user.status } });
     } else {
       res.status(404).json({ error: 'User not found' });
@@ -99,7 +90,7 @@ exports.createUser = async (req, res) => {
     const bcrypt = require('bcryptjs');
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+
     if (role === 'head_admin') {
       return res.status(403).json({ error: 'Head Admins cannot be created via the UI' });
     }
@@ -121,20 +112,20 @@ exports.updateUser = async (req, res) => {
     const { firstName, lastName, password } = req.body;
     const user = await User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    
+
     if (req.user.id === user.id) {
-       return res.status(400).json({ error: 'You cannot edit yourself here' });
+      return res.status(400).json({ error: 'You cannot edit yourself here' });
     }
     if (req.user.role === 'admin' && (user.role === 'admin' || user.role === 'head_admin')) {
-       return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
+      return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
     }
     if (req.user.role === 'head_admin' && user.role === 'head_admin') {
-       return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
+      return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
     }
 
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-    
+
     if (password) {
       const bcrypt = require('bcryptjs');
       const salt = await bcrypt.genSalt(10);
@@ -152,15 +143,15 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    
+
     if (req.user.id === user.id) {
-       return res.status(400).json({ error: 'You cannot delete yourself' });
+      return res.status(400).json({ error: 'You cannot delete yourself' });
     }
     if (req.user.role === 'admin' && (user.role === 'admin' || user.role === 'head_admin')) {
-       return res.status(403).json({ error: 'Admins cannot delete other admins or head admins' });
+      return res.status(403).json({ error: 'Admins cannot delete other admins or head admins' });
     }
     if (req.user.role === 'head_admin' && user.role === 'head_admin') {
-       return res.status(403).json({ error: 'Head Admins cannot delete other Head Admins' });
+      return res.status(403).json({ error: 'Head Admins cannot delete other Head Admins' });
     }
 
     await user.destroy();

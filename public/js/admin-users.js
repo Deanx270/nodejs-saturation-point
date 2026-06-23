@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('userRole');
 
@@ -6,30 +6,28 @@ $(document).ready(function() {
     window.location.replace('/404');
     return;
   }
-  
+
   $('body').fadeIn(200);
 
   let loggedInUserId = null;
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     loggedInUserId = payload.id;
-  } catch(e) {}
+  } catch (e) { }
 
-  // Setup AJAX to always send the JWT token
   $.ajaxSetup({
     headers: {
       'Authorization': 'Bearer ' + token
     }
   });
 
-  // Initialize DataTable
   $.fn.dataTable.ext.errMode = 'none';
   const table = $('#usersTable').on('xhr.dt', function (e, settings, json, xhr) {
     if (xhr && xhr.status === 401) {
       localStorage.removeItem('token');
       window.location.replace('/login');
     }
-  }).on('error.dt', function(e, settings, techNote, message) {
+  }).on('error.dt', function (e, settings, techNote, message) {
     if (settings && settings.jqXHR && settings.jqXHR.status !== 401) {
       Swal.fire('Data Error', 'Failed to load or update data. Access may be restricted.', 'error');
     }
@@ -39,28 +37,34 @@ $(document).ready(function() {
       dataSrc: ''
     },
     columns: [
-      { data: 'id', render: function(data, type, row) {
+      {
+        data: 'id', render: function (data, type, row) {
           if (type === 'display' && data.length > 8) {
-              return `<span class="copyable-id" data-clipboard-text="${data}" title="Click to copy ${data}" style="cursor: pointer; border-bottom: 1px dotted #ccc; color: var(--accent-gold); transition: color 0.2s ease;">${data.substr(0, 8)}...</span>`;
+            return `<span class="copyable-id" data-clipboard-text="${data}" title="Click to copy ${data}" style="cursor: pointer; border-bottom: 1px dotted #ccc; color: var(--accent-gold); transition: color 0.2s ease;">${data.substr(0, 8)}...</span>`;
           }
           return `<span class="copyable-id" data-clipboard-text="${data}" title="Click to copy ${data}" style="cursor: pointer; border-bottom: 1px dotted #ccc; color: var(--accent-gold); transition: color 0.2s ease;">${data}</span>`;
-      }},
-      { data: null, render: function(data, type, row) {
+        }
+      },
+      {
+        data: null, render: function (data, type, row) {
           const name = `${row.firstName} ${row.lastName}`;
           const safeData = name.replace(/"/g, '&quot;');
           return `<span class="dt-truncate" title="${safeData}">${name}</span>`;
-      }},
-      { data: 'email', render: function(data, type, row) {
+        }
+      },
+      {
+        data: 'email', render: function (data, type, row) {
           if (!data) return '-';
           const safeData = typeof data === 'string' ? data.replace(/"/g, '&quot;') : data;
           if (type === 'display' && data.length > 20) {
-              return `<span title="${safeData}" style="cursor: help; border-bottom: 1px dotted #ccc;">${data.substr(0, 20)}...</span>`;
+            return `<span title="${safeData}" style="cursor: help; border-bottom: 1px dotted #ccc;">${data.substr(0, 20)}...</span>`;
           }
           return `<span title="${safeData}">${data}</span>`;
-      }},
-      { 
+        }
+      },
+      {
         data: 'role',
-        render: function(data, type, row) {
+        render: function (data, type, row) {
           let disabled = '';
           if (row.id === loggedInUserId) disabled = 'disabled';
           if (role === 'admin' && (row.role === 'admin' || row.role === 'head_admin')) disabled = 'disabled';
@@ -74,9 +78,9 @@ $(document).ready(function() {
           `;
         }
       },
-      { 
+      {
         data: 'status',
-        render: function(data, type, row) {
+        render: function (data, type, row) {
           let disabled = '';
           if (row.id === loggedInUserId) disabled = 'disabled';
           if (role === 'admin' && (row.role === 'admin' || row.role === 'head_admin')) disabled = 'disabled';
@@ -92,11 +96,11 @@ $(document).ready(function() {
       },
       {
         data: 'id',
-        render: function(data, type, row) {
+        render: function (data, type, row) {
           let disabledAttr = '';
           let opacity = '1';
           let cursor = 'pointer';
-          
+
           if (row.id === loggedInUserId) { disabledAttr = 'data-disabled="true"'; opacity = '0.5'; cursor = 'not-allowed'; }
           if (role === 'admin' && (row.role === 'admin' || row.role === 'head_admin')) { disabledAttr = 'data-disabled="true"'; opacity = '0.5'; cursor = 'not-allowed'; }
           if (role === 'head_admin' && row.role === 'head_admin' && row.id !== loggedInUserId) { disabledAttr = 'data-disabled="true"'; opacity = '0.5'; cursor = 'not-allowed'; }
@@ -110,13 +114,12 @@ $(document).ready(function() {
         }
       }
     ],
-    drawCallback: function() {
-      if(window.lucide) { lucide.createIcons(); }
+    drawCallback: function () {
+      if (window.lucide) { lucide.createIcons(); }
     }
   });
 
-  // Handle copyable IDs
-  $('#usersTable').on('click', '.copyable-id', function() {
+  $('#usersTable').on('click', '.copyable-id', function () {
     const text = $(this).data('clipboard-text');
     navigator.clipboard.writeText(text).then(() => {
       const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, customClass: { popup: 'swal2-toast' } });
@@ -124,8 +127,7 @@ $(document).ready(function() {
     });
   });
 
-  // Handle Role Change
-  $('#usersTable tbody').on('change', '.role-select', function() {
+  $('#usersTable tbody').on('change', '.role-select', function () {
     const userId = $(this).data('id');
     const newRole = $(this).val();
 
@@ -134,20 +136,19 @@ $(document).ready(function() {
       type: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify({ role: newRole }),
-      success: function(res) {
+      success: function (res) {
         const Toast = Swal.mixin({ toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' } });
         Toast.fire({ icon: 'success', title: 'Role Updated' });
         table.ajax.reload(null, false);
       },
-      error: function(xhr) {
+      error: function (xhr) {
         Swal.fire('Error', xhr.responseJSON.error || 'Failed to update role', 'error');
         table.ajax.reload(null, false);
       }
     });
   });
 
-  // Handle Status Change
-  $('#usersTable tbody').on('change', '.status-select', function() {
+  $('#usersTable tbody').on('change', '.status-select', function () {
     const userId = $(this).data('id');
     const newStatus = $(this).val();
 
@@ -156,20 +157,19 @@ $(document).ready(function() {
       type: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify({ status: newStatus }),
-      success: function(res) {
+      success: function (res) {
         const Toast = Swal.mixin({ toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' } });
         Toast.fire({ icon: 'success', title: 'Status Updated' });
         table.ajax.reload(null, false);
       },
-      error: function(xhr) {
+      error: function (xhr) {
         Swal.fire('Error', xhr.responseJSON?.error || 'Failed to update status', 'error');
         table.ajax.reload(null, false);
       }
     });
   });
 
-  // Modal Logic
-  $('#addUserBtn').on('click', function() {
+  $('#addUserBtn').on('click', function () {
     $('#modalTitle').text('Add User');
     $('#userForm')[0].reset();
     $('#userId').val('');
@@ -182,24 +182,22 @@ $(document).ready(function() {
     $('#userModal').addClass('active');
   });
 
-  $('#closeModal').on('click', function() {
+  $('#closeModal').on('click', function () {
     $('#userModal').removeClass('active');
   });
 
-  // Close on outside click or ESC
-  $(window).on('click', function(e) {
+  $(window).on('click', function (e) {
     if ($(e.target).is('#userModal')) {
       $('#userModal').removeClass('active');
     }
   });
-  $(document).on('keydown', function(e) {
+  $(document).on('keydown', function (e) {
     if (e.key === "Escape") {
       $('#userModal').removeClass('active');
     }
   });
 
-  // Edit User
-  $('#usersTable tbody').on('click', '.edit-btn', function() {
+  $('#usersTable tbody').on('click', '.edit-btn', function () {
     if ($(this).attr('data-disabled') === 'true') {
       const Toast = Swal.mixin({ toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' } });
       Toast.fire({ icon: 'error', title: 'Permission Denied: You cannot modify this user.' });
@@ -208,7 +206,7 @@ $(document).ready(function() {
 
     const tr = $(this).closest('tr');
     const rowData = table.row(tr).data();
-    
+
     $('#modalTitle').text('Edit User');
     $('#userId').val(rowData.id);
     $('#firstName').val(rowData.firstName);
@@ -222,8 +220,7 @@ $(document).ready(function() {
     $('#userModal').addClass('active');
   });
 
-  // Delete User
-  $('#usersTable tbody').on('click', '.delete-btn', function() {
+  $('#usersTable tbody').on('click', '.delete-btn', function () {
     if ($(this).attr('data-disabled') === 'true') {
       const Toast = Swal.mixin({ toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000, customClass: { popup: 'swal2-toast' } });
       Toast.fire({ icon: 'error', title: 'Permission Denied: You cannot modify this user.' });
@@ -244,11 +241,11 @@ $(document).ready(function() {
         $.ajax({
           url: `/api/admin/users/${id}`,
           type: 'DELETE',
-          success: function(res) {
+          success: function (res) {
             Swal.fire('Deleted!', res.message, 'success');
             table.ajax.reload();
           },
-          error: function(xhr) {
+          error: function (xhr) {
             Swal.fire('Error!', xhr.responseJSON?.error || 'Error deleting user', 'error');
           }
         });
@@ -256,8 +253,7 @@ $(document).ready(function() {
     });
   });
 
-  // Modal Logic
-  $('#addUserBtn').on('click', function() {
+  $('#addUserBtn').on('click', function () {
     $('#userForm')[0].reset();
     $('#userId').val('');
     $('#modalTitle').text('Add User');
@@ -268,29 +264,28 @@ $(document).ready(function() {
     $('#userModal').addClass('active');
   });
 
-  $('#closeModal').on('click', function() {
+  $('#closeModal').on('click', function () {
     $('#userModal').removeClass('active');
   });
 
-  $(window).on('click', function(e) {
+  $(window).on('click', function (e) {
     if ($(e.target).is('#userModal')) {
       $('#userModal').removeClass('active');
     }
   });
 
-  $(document).on('keydown', function(e) {
+  $(document).on('keydown', function (e) {
     if (e.key === 'Escape' && $('#userModal').hasClass('active')) {
       $('#userModal').removeClass('active');
     }
   });
 
-  // Form Validation & Submit
   $('#userForm').validate({
     rules: {
       firstName: "required",
       lastName: "required",
       email: { required: true, email: true },
-      password: { required: function() { return !$('#userId').val(); } }
+      password: { required: function () { return !$('#userId').val(); } }
     },
     messages: {
       firstName: "First name is required",
@@ -298,16 +293,16 @@ $(document).ready(function() {
       email: { required: "Email is required", email: "Enter a valid email" },
       password: "Password is required"
     },
-    submitHandler: function(form) {
+    submitHandler: function (form) {
       const id = $('#userId').val();
       const method = id ? 'PUT' : 'POST';
       const url = id ? `/api/admin/users/${id}` : '/api/admin/users';
-      
+
       const data = {
         firstName: $('#firstName').val(),
         lastName: $('#lastName').val()
       };
-      
+
       const pwd = $('#password').val();
       if (pwd) {
         data.password = pwd;
@@ -325,30 +320,28 @@ $(document).ready(function() {
         type: method,
         contentType: 'application/json',
         data: JSON.stringify(data),
-        success: function(res) {
+        success: function (res) {
           $('#userModal').removeClass('active');
           Swal.fire('Success', res.message, 'success');
           table.ajax.reload();
         },
-        error: function(xhr) {
+        error: function (xhr) {
           const errMsg = xhr.responseJSON?.error || 'Failed to save user.';
           $('<div class="auth-error-banner"><i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i> <span>' + errMsg + '</span></div>')
             .insertBefore('#userForm');
-          if(window.lucide) { window.lucide.createIcons(); }
+          if (window.lucide) { window.lucide.createIcons(); }
         }
       });
     }
   });
 
-  // Logout
-  $('#logoutBtn').click(function(e) {
+  $('#logoutBtn').click(function (e) {
     e.preventDefault();
-    $.post('/api/auth/logout', function() {
+    $.post('/api/auth/logout', function () {
       localStorage.removeItem('token');
       localStorage.removeItem('userRole');
       window.location.href = '/login';
-    }).fail(function() {
-      // Force local logout even if server fails
+    }).fail(function () {
       localStorage.removeItem('token');
       localStorage.removeItem('userRole');
       window.location.href = '/login';
