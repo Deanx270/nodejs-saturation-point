@@ -1580,3 +1580,21 @@ body.swal2-toast-shown .swal2-container .swal2-toast .swal2-title {
 .filter-select:focus {
   border-color: var(--accent-gold);
 }
+
+.profile-bento-grid {
+  display: grid;
+  grid-template-columns: 35% 1fr;
+  gap: 3rem;
+  align-items: start;
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .profile-bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#myTransactionsTable tbody tr {
+  cursor: pointer;
+}

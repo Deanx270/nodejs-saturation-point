@@ -81,8 +81,24 @@ exports.getAllTransactions = async (req, res) => {
     });
     res.json(transactions);
   } catch (error) {
-    console.error('Error fetching transactions:', error);
     res.status(500).json({ error: 'Failed to fetch transactions' });
+  }
+};
+
+exports.getMyTransactions = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const transactions = await Transaction.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+      include: [
+        { model: TransactionItem, include: [Product] }
+      ]
+    });
+    res.json(transactions);
+  } catch (error) {
+    console.error('Error fetching my transactions:', error);
+    res.status(500).json({ error: 'Failed to fetch your transactions' });
   }
 };
 
