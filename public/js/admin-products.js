@@ -54,7 +54,7 @@ $(document).ready(function () {
     }
   }).DataTable({
     ajax: {
-      url: '/api/products',
+      url: '/api/products?limit=1000',
       dataSrc: ''
     },
     columns: [
@@ -247,7 +247,7 @@ $(document).ready(function () {
           headers: { 'Authorization': 'Bearer ' + token },
           success: function (res) {
             Swal.fire('Deleted!', res.message, 'success');
-            dt.ajax.reload();
+            dt.ajax.reload(null, false);
           },
           error: function (xhr) {
             Swal.fire('Error!', xhr.responseJSON?.error || 'Error deleting product', 'error');
@@ -326,7 +326,7 @@ $(document).ready(function () {
         success: function (res) {
           $('#productModal').removeClass('active');
           Swal.fire('Success!', res.message, 'success');
-          dt.ajax.reload();
+          dt.ajax.reload(null, false);
         },
         error: function (xhr) {
           const errMsg = xhr.responseJSON?.error || 'Failed to save product.';
