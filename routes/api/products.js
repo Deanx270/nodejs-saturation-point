@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../../controllers/productController');
-const { verifyToken, isAdmin } = require('../../middleware/auth');
+const { verifyToken, isStaffOrAdmin } = require('../../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 
@@ -35,8 +35,8 @@ router.post('/:id/reviews', verifyToken, productController.addReview);
 
 router.get('/:id', productController.getProductById);
 
-router.post('/', verifyToken, isAdmin, upload.array('images', 5), productController.createProduct);
-router.put('/:id', verifyToken, isAdmin, upload.array('images', 5), productController.updateProduct);
-router.delete('/:id', verifyToken, isAdmin, productController.deleteProduct);
+router.post('/', verifyToken, isStaffOrAdmin, upload.array('images', 5), productController.createProduct);
+router.put('/:id', verifyToken, isStaffOrAdmin, upload.array('images', 5), productController.updateProduct);
+router.delete('/:id', verifyToken, isStaffOrAdmin, productController.deleteProduct);
 
 module.exports = router;

@@ -17,33 +17,34 @@ exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
 
-    if (!['admin', 'customer'].includes(role) && role !== 'head_admin') {
-      return res.status(400).json({ error: 'Invalid role' });
-    }
-    if (role === 'head_admin') {
-      return res.status(403).json({ error: 'Cannot upgrade a user to Head Admin via UI' });
+    if (!['admin', 'staff'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role for update' });
     }
 
     const user = await User.findByPk(req.params.id);
 
-    if (user) {
-      if (req.user.id === user.id) {
-        return res.status(400).json({ error: 'You cannot change your own role' });
-      }
-      if (req.user.role === 'admin' && (user.role === 'admin' || user.role === 'head_admin')) {
-        return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
-      }
-      if (req.user.role === 'head_admin' && user.role === 'head_admin') {
-        return res.status(403).json({ error: 'Head Admins cannot modify other Head Admins' });
-      }
-
-      user.role = role;
-      await user.save();
-
-      res.json({ message: 'User role updated successfully', user: { id: user.id, firstName: user.firstName, lastName: user.lastName, role: user.role } });
-    } else {
-      res.status(404).json({ error: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
+    
+    if (user.role === 'customer') {
+      return res.status(403).json({ error: 'Cannot change the role of a customer' });
+    }
+    if (user.role === 'head_admin') {
+      return res.status(403).json({ error: 'Cannot change the role of a head admin' });
+    }
+
+    if (req.user.id === user.id) {
+      return res.status(400).json({ error: 'You cannot change your own role' });
+    }
+    if (req.user.role === 'admin' && (user.role === 'admin' || user.role === 'head_admin')) {
+      return res.status(403).json({ error: 'Admins cannot modify other admins or head admins' });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.json({ message: 'User role updated successfully', user: { id: user.id, firstName: user.firstName, lastName: user.lastName, role: user.role } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });

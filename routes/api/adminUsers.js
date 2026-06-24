@@ -12,6 +12,7 @@ router.route('/:id')
   .put(adminUserController.updateUser)
   .delete(adminUserController.deleteUser);
 
+
 router.route('/:id/role')
   .put(adminUserController.updateUserRole);
 

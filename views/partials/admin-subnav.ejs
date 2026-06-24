@@ -3,15 +3,28 @@
 
   <div class="admin-subnav"
     style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 50px; box-shadow: 0 8px 32px rgba(0,0,0,0.06); border: 1px solid rgba(27,38,59,0.08); display: inline-flex; justify-content: center; align-items: center; padding: 14px 40px; gap: 32px; pointer-events: auto;">
-    <a href="/admin/dashboard"
+    <a href="/admin/dashboard" id="subnav-dashboard"
       class="admin-subnav-link <%= locals.activeTab === 'dashboard' ? 'active' : '' %>">Dashboard</a>
-    <a href="/admin/users" class="admin-subnav-link <%= locals.activeTab === 'users' ? 'active' : '' %>">Users</a>
+    <a href="/admin/users" id="subnav-users" class="admin-subnav-link <%= locals.activeTab === 'users' ? 'active' : '' %>">Users</a>
     <a href="/admin/brands" class="admin-subnav-link <%= locals.activeTab === 'brands' ? 'active' : '' %>">Brands</a>
     <a href="/admin/categories"
       class="admin-subnav-link <%= locals.activeTab === 'categories' ? 'active' : '' %>">Categories</a>
     <a href="/admin/products"
       class="admin-subnav-link <%= locals.activeTab === 'products' ? 'active' : '' %>">Products</a>
-    <a href="/admin/transactions"
+    <a href="/admin/transactions" id="subnav-transactions"
       class="admin-subnav-link <%= locals.activeTab === 'transactions' ? 'active' : '' %>">Transactions</a>
   </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const role = localStorage.getItem('userRole');
+    if (role === 'staff') {
+      const db = document.getElementById('subnav-dashboard');
+      const us = document.getElementById('subnav-users');
+      const tr = document.getElementById('subnav-transactions');
+      if (db) db.style.display = 'none';
+      if (us) us.style.display = 'none';
+      if (tr) tr.style.display = 'none';
+    }
+  });
+</script>

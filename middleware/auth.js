@@ -39,4 +39,12 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken, isAdmin };
+const isStaffOrAdmin = (req, res, next) => {
+  if (req.user && ['staff', 'admin', 'head_admin'].includes(req.user.role)) {
+    next();
+  } else {
+    return res.status(404).json({ error: 'Endpoint not found' });
+  }
+};
+
+module.exports = { verifyToken, isAdmin, isStaffOrAdmin };

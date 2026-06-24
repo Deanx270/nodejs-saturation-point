@@ -1035,13 +1035,21 @@ table.dataTable.no-footer {
 }
 
 .swal2-confirm {
-  background-color: #9f1239 !important;
+  background-color: var(--accent-dark);
   border-radius: 2px !important;
   text-transform: uppercase !important;
   letter-spacing: 0.1em !important;
   font-weight: 500 !important;
   padding: 12px 24px !important;
   box-shadow: none !important;
+}
+
+.swal2-confirm.swal-btn-danger {
+  background-color: #9f1239 !important;
+}
+
+.swal2-confirm.swal-btn-danger:hover {
+  background-color: #880e31 !important;
 }
 
 .swal2-cancel {

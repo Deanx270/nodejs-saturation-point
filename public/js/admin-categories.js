@@ -2,8 +2,9 @@ $(document).ready(function () {
   if (window.lucide) { window.lucide.createIcons(); }
 
   const token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '/login';
+  const role = localStorage.getItem('userRole');
+  if (!token || (role !== 'admin' && role !== 'head_admin' && role !== 'staff')) {
+    window.location.replace('/404');
     return;
   }
 
@@ -131,7 +132,7 @@ $(document).ready(function () {
         success: function (response) {
           $('#categoryModal').removeClass('active');
           table.ajax.reload(null, false);
-          showToast(isEdit ? 'Category updated successfully' : 'Category created successfully');
+          Swal.fire('Success', isEdit ? 'Category updated successfully' : 'Category created successfully', 'success');
         },
         error: function (err) {
           const msg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to save category';
@@ -165,11 +166,11 @@ $(document).ready(function () {
       text: "This action cannot be undone.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#dc2626',
+      confirmButtonColor: '#9f1239',
       cancelButtonColor: '#E5E7EB',
       confirmButtonText: 'Yes, delete it',
       cancelButtonText: '<span style="color: #374151">Cancel</span>',
-      customClass: { popup: 'premium-swal-popup' }
+      customClass: { popup: 'premium-swal-popup', confirmButton: 'swal-btn-danger' }
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({

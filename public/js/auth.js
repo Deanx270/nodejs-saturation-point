@@ -9,6 +9,9 @@ $(document).ready(function () {
     if (role === 'admin' || role === 'head_admin') {
       navLinks += '<a href="/admin/dashboard" class="nav-link">Admin Panel</a>';
       navLinks += '<a href="/cart" class="nav-link" id="cartLink">My Cart<span class="cart-badge" id="cartBadge" style="display: none;">0</span></a>';
+    } else if (role === 'staff') {
+      navLinks += '<a href="/admin/brands" class="nav-link">Staff Panel</a>';
+      navLinks += '<a href="/cart" class="nav-link" id="cartLink">My Cart<span class="cart-badge" id="cartBadge" style="display: none;">0</span></a>';
     } else {
       navLinks += '<a href="/profile" class="nav-link">My Profile</a>';
       navLinks += '<a href="/cart" class="nav-link" id="cartLink">My Cart<span class="cart-badge" id="cartBadge" style="display: none;">0</span></a>';
@@ -115,6 +118,8 @@ $(document).ready(function () {
               setTimeout(() => {
                 if (response.user.role === 'admin' || response.user.role === 'head_admin') {
                   window.location.href = '/admin/dashboard';
+                } else if (response.user.role === 'staff') {
+                  window.location.href = '/admin/brands';
                 } else {
                   window.location.href = '/catalog';
                 }
@@ -162,6 +167,7 @@ $(document).ready(function () {
           processData: false,
           contentType: false,
           success: function (response) {
+            $('.auth-error-banner').remove();
             $('#registerForm').html('<div style="background: rgba(22, 101, 52, 0.1); color: #166534; padding: 16px; border-radius: 4px; border: 1px solid #166534; text-align: center; margin-bottom: 20px;"><i data-lucide="check-circle" style="width: 24px; height: 24px; margin-bottom: 8px;"></i><br><strong>Registration successful!</strong><br>Please check your email to verify your account.</div>');
             if (window.lucide) { window.lucide.createIcons(); }
           },

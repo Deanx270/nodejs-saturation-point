@@ -2,7 +2,7 @@ $(document).ready(function () {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('userRole');
 
-  if (!token || (role !== 'admin' && role !== 'head_admin')) {
+  if (!token || (role !== 'admin' && role !== 'head_admin' && role !== 'staff')) {
     window.location.replace('/404');
     return;
   }
@@ -122,6 +122,8 @@ $(document).ready(function () {
       text: "This action cannot be undone.",
       icon: 'warning',
       showCancelButton: true,
+      confirmButtonColor: '#9f1239',
+      customClass: { confirmButton: 'swal-btn-danger' },
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
       reverseButtons: true

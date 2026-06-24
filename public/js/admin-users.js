@@ -65,17 +65,21 @@ $(document).ready(function () {
       {
         data: 'role',
         render: function (data, type, row) {
-          let disabled = '';
-          if (row.id === loggedInUserId) disabled = 'disabled';
-          if (role === 'admin' && (row.role === 'admin' || row.role === 'head_admin')) disabled = 'disabled';
-          if (role === 'head_admin' && row.role === 'head_admin' && row.id !== loggedInUserId) disabled = 'disabled';
+          if (data === 'customer' || data === 'head_admin') {
+            let displayRole = data === 'head_admin' ? 'Head Admin' : 'Customer';
+            return `<span class="badge" style="background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border-subtle);">${displayRole}</span>`;
+          } else {
+            let disabled = '';
+            if (row.id === loggedInUserId) disabled = 'disabled';
+            if (role === 'head_admin' && row.role === 'head_admin' && row.id !== loggedInUserId) disabled = 'disabled';
 
-          return `
-            <select class="action-select role-select" data-id="${row.id}" ${disabled}>
-              <option value="customer" ${data === 'customer' ? 'selected' : ''}>Customer</option>
-              <option value="admin" ${data === 'admin' ? 'selected' : ''}>Admin</option>
-            </select>
-          `;
+            return `
+              <select class="action-select role-select" data-id="${row.id}" ${disabled}>
+                <option value="admin" ${data === 'admin' ? 'selected' : ''}>Admin</option>
+                <option value="staff" ${data === 'staff' ? 'selected' : ''}>Staff</option>
+              </select>
+            `;
+          }
         }
       },
       {
@@ -126,6 +130,7 @@ $(document).ready(function () {
       Toast.fire({ icon: 'success', title: 'ID copied to clipboard!' });
     });
   });
+
 
   $('#usersTable tbody').on('change', '.role-select', function () {
     const userId = $(this).data('id');
@@ -220,6 +225,8 @@ $(document).ready(function () {
       text: "This action cannot be undone.",
       icon: 'warning',
       showCancelButton: true,
+      confirmButtonColor: '#9f1239',
+      customClass: { confirmButton: 'swal-btn-danger' },
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
       reverseButtons: true

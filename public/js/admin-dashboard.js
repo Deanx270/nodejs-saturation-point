@@ -1,7 +1,8 @@
 $(document).ready(function () {
   const token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '/login';
+  const role = localStorage.getItem('userRole');
+  if (!token || role === 'staff' || role === 'customer') {
+    window.location.replace('/404');
     return;
   }
 
