@@ -76,7 +76,7 @@ $(document).ready(function () {
     let val = $(this).val();
     val = val.replace(/[^a-zA-Z\s]/g, '');
     val = val.replace(/\b[a-z]/g, char => char.toUpperCase());
-    if (val.length > 30) val = val.substring(0, 30);
+    if (val.length > 50) val = val.substring(0, 50);
     $(this).val(val);
   });
 

@@ -15,8 +15,8 @@ $(document).ready(function () {
       url: '/api/auth/me',
       headers: { 'Authorization': 'Bearer ' + token },
       success: function (user) {
-        $('#firstName').val(user.firstName);
-        $('#lastName').val(user.lastName);
+        $('#firstName').val(user.firstName).trigger('input');
+        $('#lastName').val(user.lastName).trigger('input');
         $('#email').val(user.email);
 
         if (user.profilePicture) {
@@ -26,8 +26,8 @@ $(document).ready(function () {
         $('#avatarPreview').addClass('has-image');
       },
       error: function () {
-        $('#firstName').val(payload.firstName || '');
-        $('#lastName').val(payload.lastName || '');
+        $('#firstName').val(payload.firstName || '').trigger('input');
+        $('#lastName').val(payload.lastName || '').trigger('input');
         $('#email').val(payload.email || '');
 
         $('#avatarImage').show();
@@ -51,7 +51,7 @@ $(document).ready(function () {
     let val = $(this).val();
     val = val.replace(/[^a-zA-Z\s]/g, '');
     val = val.replace(/\b[a-z]/g, char => char.toUpperCase());
-    if (val.length > 30) val = val.substring(0, 30);
+    if (val.length > 50) val = val.substring(0, 50);
     $(this).val(val);
   });
 
