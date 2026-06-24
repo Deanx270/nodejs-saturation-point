@@ -169,19 +169,6 @@ $(document).ready(function () {
     });
   });
 
-  $('#addUserBtn').on('click', function () {
-    $('#modalTitle').text('Add User');
-    $('#userForm')[0].reset();
-    $('#userId').val('');
-    $('#email').prop('disabled', false).css({ 'background': 'transparent', 'color': 'inherit' });
-    $('#passwordGroup').show();
-    $('#passwordGroup label').text('PASSWORD');
-    $('#password').val('');
-    $('#roleGroup').show();
-    $('.auth-error-banner').remove();
-    $('#userModal').addClass('active');
-  });
-
   $('#closeModal').on('click', function () {
     $('#userModal').removeClass('active');
   });
@@ -253,17 +240,6 @@ $(document).ready(function () {
     });
   });
 
-  $('#addUserBtn').on('click', function () {
-    $('#userForm')[0].reset();
-    $('#userId').val('');
-    $('#modalTitle').text('Add User');
-    $('#emailGroup, #passwordGroup, #roleGroup').show();
-    $('#passwordGroup label').text('PASSWORD');
-    $('#email').prop('disabled', false).css({ 'background': 'transparent', 'color': 'inherit' });
-    $('.auth-error-banner').remove();
-    $('#userModal').addClass('active');
-  });
-
   $('#closeModal').on('click', function () {
     $('#userModal').removeClass('active');
   });
@@ -283,20 +259,16 @@ $(document).ready(function () {
   $('#userForm').validate({
     rules: {
       firstName: "required",
-      lastName: "required",
-      email: { required: true, email: true },
-      password: { required: function () { return !$('#userId').val(); } }
+      lastName: "required"
     },
     messages: {
       firstName: "First name is required",
-      lastName: "Last name is required",
-      email: { required: "Email is required", email: "Enter a valid email" },
-      password: "Password is required"
+      lastName: "Last name is required"
     },
     submitHandler: function (form) {
       const id = $('#userId').val();
-      const method = id ? 'PUT' : 'POST';
-      const url = id ? `/api/admin/users/${id}` : '/api/admin/users';
+      const method = 'PUT';
+      const url = `/api/admin/users/${id}`;
 
       const data = {
         firstName: $('#firstName').val(),
@@ -306,11 +278,6 @@ $(document).ready(function () {
       const pwd = $('#password').val();
       if (pwd) {
         data.password = pwd;
-      }
-
-      if (!id) {
-        data.email = $('#email').val();
-        data.role = $('#role').val();
       }
 
       $('.auth-error-banner').remove();

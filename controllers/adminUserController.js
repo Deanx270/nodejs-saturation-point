@@ -84,28 +84,6 @@ exports.updateUserStatus = async (req, res) => {
   }
 };
 
-exports.createUser = async (req, res) => {
-  try {
-    const { firstName, lastName, email, password, role } = req.body;
-    const bcrypt = require('bcryptjs');
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    if (role === 'head_admin') {
-      return res.status(403).json({ error: 'Head Admins cannot be created via the UI' });
-    }
-
-    const validRoles = ['customer', 'admin'];
-    const finalRole = validRoles.includes(role) ? role : 'customer';
-
-    const user = await User.create({
-      firstName, lastName, email, password: hashedPassword, role: finalRole, status: 'active'
-    });
-    res.status(201).json({ message: 'User created successfully', user: { id: user.id } });
-  } catch (err) {
-    res.status(500).json({ error: 'Server error' });
-  }
-};
 
 exports.updateUser = async (req, res) => {
   try {
