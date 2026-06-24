@@ -190,6 +190,8 @@ exports.createProduct = async (req, res) => {
     let imagePaths = [];
     if (req.files && req.files.length > 0) {
       imagePaths = req.files.map(file => `/images/uploads/${file.filename}`);
+    } else {
+      imagePaths = ['/images/default-avatar.png'];
     }
 
     const product = await Product.create({

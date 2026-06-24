@@ -12,8 +12,16 @@ const generateToken = (id) => {
 
 exports.register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    let { firstName, lastName, email, password } = req.body;
     let profilePicture = '/images/default-avatar.png';
+    
+    const formatName = (name) => {
+      if (!name) return '';
+      return name.replace(/[^a-zA-Z\s]/g, '').substring(0, 30).replace(/\b[a-z]/g, char => char.toUpperCase());
+    };
+    
+    firstName = formatName(firstName);
+    lastName = formatName(lastName);
     if (req.file) {
       profilePicture = '/images/uploads/' + req.file.filename;
     }

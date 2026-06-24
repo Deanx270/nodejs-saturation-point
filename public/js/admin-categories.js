@@ -90,55 +90,59 @@ $(document).ready(function () {
     $('#categoryModal').addClass('active');
   });
 
-  $('#categoryForm').submit(function (e) {
-    e.preventDefault();
-
+  $.validator.addMethod("slug", function(value, element) {
     const isEdit = $('#isEdit').val() === 'true';
-    const id = $('#categoryId').val().trim();
-    const name = $('#categoryName').val().trim();
-    const description = $('#categoryDescription').val().trim();
+    if (isEdit) return true;
+    return this.optional(element) || /^[a-z0-9-]+$/.test(value);
+  }, "ID must contain only lowercase letters, numbers, and hyphens.");
 
-    if (!isEdit) {
-      const slugRegex = /^[a-z0-9-]+$/;
-      if (!slugRegex.test(id)) {
-        showToast('ID must contain only lowercase letters, numbers, and hyphens.', 'error');
-        return;
+  $('#categoryForm').validate({
+    rules: {
+      id: { required: true, slug: true },
+      name: { required: true }
+    },
+    errorElement: 'label',
+    submitHandler: function (form) {
+      const isEdit = $('#isEdit').val() === 'true';
+      const id = $('#categoryId').val().trim();
+      const name = $('#categoryName').val().trim();
+      const description = $('#categoryDescription').val().trim();
+
+      const payload = { id, name, description };
+
+      let url = '/api/categories';
+      if (isEdit) {
+        const originalId = $('#categoryForm').data('original-id');
+        url = `/api/categories/${originalId}`;
       }
+
+      const type = isEdit ? 'PUT' : 'POST';
+
+      const btn = $('#saveCategoryBtn');
+      const originalText = btn.text();
+      btn.text('Saving...').prop('disabled', true);
+
+      $.ajax({
+        url: url,
+        type: type,
+        contentType: 'application/json',
+        headers: { 'Authorization': 'Bearer ' + token },
+        data: JSON.stringify(payload),
+        success: function (response) {
+          $('#categoryModal').removeClass('active');
+          table.ajax.reload(null, false);
+          showToast(isEdit ? 'Category updated successfully' : 'Category created successfully');
+        },
+        error: function (err) {
+          const msg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to save category';
+          showToast(msg, 'error');
+        },
+        complete: function () {
+          btn.text(originalText).prop('disabled', false);
+        }
+      });
+      return false;
     }
-
-    const payload = { id, name, description };
-
-    let url = '/api/categories';
-    if (isEdit) {
-      const originalId = $('#categoryForm').data('original-id');
-      url = `/api/categories/${originalId}`;
-    }
-
-    const type = isEdit ? 'PUT' : 'POST';
-
-    const btn = $('#saveCategoryBtn');
-    const originalText = btn.text();
-    btn.text('Saving...').prop('disabled', true);
-
-    $.ajax({
-      url: url,
-      type: type,
-      contentType: 'application/json',
-      headers: { 'Authorization': 'Bearer ' + token },
-      data: JSON.stringify(payload),
-      success: function (response) {
-        $('#categoryModal').removeClass('active');
-        table.ajax.reload(null, false);
-        showToast(isEdit ? 'Category updated successfully' : 'Category created successfully');
-      },
-      error: function (err) {
-        const msg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to save category';
-        showToast(msg, 'error');
-      },
-      complete: function () {
-        btn.text(originalText).prop('disabled', false);
-      }
-    });
   });
 
   $('#categoriesTable').on('click', '.delete-btn', function () {

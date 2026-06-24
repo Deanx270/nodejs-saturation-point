@@ -72,6 +72,14 @@ $(document).ready(function () {
     return this.optional(element) || value.length >= 6;
   }, "Password must be at least 6 characters long");
 
+  $('#firstName, #lastName').on('input', function() {
+    let val = $(this).val();
+    val = val.replace(/[^a-zA-Z\s]/g, '');
+    val = val.replace(/\b[a-z]/g, char => char.toUpperCase());
+    if (val.length > 30) val = val.substring(0, 30);
+    $(this).val(val);
+  });
+
   if ($('#loginForm').length > 0) {
     $("#loginForm").validate({
       rules: {
@@ -173,7 +181,7 @@ $(document).ready(function () {
       }
     });
   }
-  if ($('#avatarPreview').length > 0) {
+  if ($('#registerForm').length > 0 && $('#avatarPreview').length > 0) {
     $('#avatarPreview').on('click', function () {
       $('#profilePicture').click();
     });

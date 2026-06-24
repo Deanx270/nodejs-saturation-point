@@ -9,10 +9,16 @@ exports.updateProfile = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const { firstName, lastName, password } = req.body;
+    const { password } = req.body;
+    let { firstName, lastName } = req.body;
 
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
+    const formatName = (name) => {
+      if (!name) return '';
+      return name.replace(/[^a-zA-Z\s]/g, '').substring(0, 30).replace(/\b[a-z]/g, char => char.toUpperCase());
+    };
+
+    if (firstName) user.firstName = formatName(firstName);
+    if (lastName) user.lastName = formatName(lastName);
 
     if (req.file) {
       user.profilePicture = '/images/uploads/' + req.file.filename;

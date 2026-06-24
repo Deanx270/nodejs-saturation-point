@@ -39,8 +39,20 @@ $(document).ready(function () {
     return;
   }
 
-  $('#avatarUploadTrigger').click(function () {
+  $('#avatarPreview').click(function () {
     $('#profilePicture').click();
+  });
+
+  $('#profilePicture').click(function(e) {
+    e.stopPropagation();
+  });
+
+  $('#firstName, #lastName').on('input', function() {
+    let val = $(this).val();
+    val = val.replace(/[^a-zA-Z\s]/g, '');
+    val = val.replace(/\b[a-z]/g, char => char.toUpperCase());
+    if (val.length > 30) val = val.substring(0, 30);
+    $(this).val(val);
   });
 
   $('#profilePicture').change(function (e) {
@@ -54,46 +66,50 @@ $(document).ready(function () {
     }
   });
 
-  $('#profileForm').submit(function (e) {
-    e.preventDefault();
+  $('#profileForm').validate({
+    rules: {
+      firstName: { required: true },
+      lastName: { required: true }
+    },
+    submitHandler: function (form) {
+      const btn = $('#saveProfileBtn');
+      const originalText = btn.text();
+      btn.text('Saving...').prop('disabled', true);
+      $('.auth-error-banner').remove();
 
-    const btn = $('#saveProfileBtn');
-    const originalText = btn.text();
-    btn.text('Saving...').prop('disabled', true);
-    $('.auth-error-banner').remove();
+      const formData = new FormData(form);
 
-    const formData = new FormData(this);
+      $.ajax({
+        url: '/api/users/profile',
+        type: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
 
-    $.ajax({
-      url: '/api/users/profile',
-      type: 'PUT',
-      headers: { 'Authorization': 'Bearer ' + token },
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (res) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            customClass: { popup: 'swal2-toast' }
+          });
+          Toast.fire({ icon: 'success', title: 'Profile updated successfully!' });
 
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: 'swal2-toast' }
-        });
-        Toast.fire({ icon: 'success', title: 'Profile updated successfully!' });
-
-        $('#password').val('');
-      },
-      error: function (err) {
-        const errorMsg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to update profile';
-        $('<div class="auth-error-banner"><i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i> <span>' + errorMsg + '</span></div>')
-          .insertBefore('#profileForm');
-        if (window.lucide) { lucide.createIcons(); }
-      },
-      complete: function () {
-        btn.text(originalText).prop('disabled', false);
-      }
-    });
+          $('#password').val('');
+        },
+        error: function (err) {
+          const errorMsg = err.responseJSON && err.responseJSON.error ? err.responseJSON.error : 'Failed to update profile';
+          $('<div class="auth-error-banner"><i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i> <span>' + errorMsg + '</span></div>')
+            .insertBefore('#profileForm');
+          if (window.lucide) { lucide.createIcons(); }
+        },
+        complete: function () {
+          btn.text(originalText).prop('disabled', false);
+        }
+      });
+    }
   });
 
   $.fn.dataTable.ext.errMode = 'none';
