@@ -63,27 +63,27 @@ app.get('/product/:id', (req, res) => {
 });
 
 app.get('/admin/dashboard', (req, res) => {
-  res.render('admin-dashboard', { title: 'Admin - Dashboard', activeTab: 'dashboard' });
+  res.render('admin/dashboard', { title: 'Admin - Dashboard', activeTab: 'dashboard' });
 });
 
 app.get('/admin/users', (req, res) => {
-  res.render('admin-users', { title: 'Admin - User Management', activeTab: 'users' });
+  res.render('admin/users', { title: 'Admin - User Management', activeTab: 'users' });
 });
 
 app.get('/admin/brands', (req, res) => {
-  res.render('admin-brands', { title: 'Admin - Brands', activeTab: 'brands' });
+  res.render('admin/brands', { title: 'Admin - Brands', activeTab: 'brands' });
 });
 
 app.get('/admin/products', (req, res) => {
-  res.render('admin-products', { title: 'Admin - Products', activeTab: 'products' });
+  res.render('admin/products', { title: 'Admin - Products', activeTab: 'products' });
 });
 
 app.get('/admin/categories', (req, res) => {
-  res.render('admin-categories', { title: 'Admin - Categories', activeTab: 'categories' });
+  res.render('admin/categories', { title: 'Admin - Categories', activeTab: 'categories' });
 });
 
 app.get('/admin/transactions', (req, res) => {
-  res.render('admin-transactions', { title: 'Admin - Transactions', activeTab: 'transactions' });
+  res.render('admin/transactions', { title: 'Admin - Transactions', activeTab: 'transactions' });
 });
 
 app.get('/verification-success', (req, res) => {

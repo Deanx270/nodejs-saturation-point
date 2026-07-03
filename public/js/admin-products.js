@@ -18,7 +18,7 @@ $(document).ready(function () {
       type: 'GET',
       success: function (brands) {
         let options = '<option value="">Select a brand...</option>';
-        brands.forEach(b => {
+        brands.filter(b => b.status === 'active').forEach(b => {
           options += `<option value="${b.id}">${b.name}</option>`;
         });
         $('#brandId').html(options);

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <%- include('partials/head') %>
+  <%- include('../partials/head') %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       .dashboard-grid {
@@ -98,8 +98,8 @@
 </head>
 
 <body style="display: none; background-color: #FAF9F6;">
-  <%- include('partials/header') %>
-    <%- include('partials/admin-subnav') %>
+  <%- include('../partials/header') %>
+    <%- include('partials/subnav') %>
 
       <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
         <h2 class="brand-font" style="font-size: 2.5rem; margin-bottom: 16px; color: #1B263B;">Admin Dashboard</h2>
@@ -153,8 +153,8 @@
         </div>
       </main>
 
-      <%- include('partials/footer') %>
-        <%- include('partials/scripts') %>
+      <%- include('../partials/footer') %>
+        <%- include('../partials/scripts') %>
           <script src="/js/admin-dashboard.js"></script>
 </body>
 

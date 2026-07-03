@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-  <%- include('partials/head') %>
+  <%- include('../partials/head') %>
 </head>
 
 <body style="display: none;">
-  <%- include('partials/header') %>
-    <%- include('partials/admin-subnav') %>
+  <%- include('../partials/header') %>
+    <%- include('partials/subnav') %>
 
       <main class="container" style="padding-top: 24px; padding-bottom: 60px;">
         <div class="bento-card" style="cursor: default; transform: none; box-shadow: var(--shadow-liquid);">
@@ -130,8 +130,8 @@
         </div>
       </div>
 
-      <%- include('partials/footer') %>
-        <%- include('partials/scripts') %>
+      <%- include('../partials/footer') %>
+        <%- include('../partials/scripts') %>
           <script src="/js/admin-transactions.js"></script>
           <script>
             if (window.lucide) {
