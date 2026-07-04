@@ -123,6 +123,7 @@ $(document).ready(function () {
       { 
         data: 'id',
         render: function(data, type, row) {
+          if (type !== 'display') return data;
           const shortId = data.split('-')[0];
           let imgHtml = '';
           if (row.TransactionItems && row.TransactionItems.length > 0) {
@@ -135,19 +136,27 @@ $(document).ready(function () {
       },
       { 
         data: 'createdAt',
-        render: function(data) {
+        render: function(data, type) {
+          if (type !== 'display') return data;
           return new Date(data).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
       },
       { 
         data: 'totalAmount',
-        render: function(data) {
+        render: function(data, type) {
+          if (type !== 'display') return parseFloat(data) || 0;
           return `PHP ${parseFloat(data).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         }
       },
       { 
         data: 'status',
-        render: function(data) {
+        render: function(data, type) {
+          if (type === 'sort') {
+            const statusOrder = { 'pending': 1, 'shipped': 2, 'delivered': 3, 'cancelled': 4 };
+            return statusOrder[data] || 99;
+          }
+          if (type !== 'display') return data;
+
           let badgeClass = 'badge customer';
           if(data === 'delivered') badgeClass = 'badge active';
           else if(data === 'cancelled') badgeClass = 'badge deactivated';

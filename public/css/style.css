@@ -1606,3 +1606,9 @@ body.swal2-toast-shown .swal2-container .swal2-toast .swal2-title {
 #myTransactionsTable tbody tr {
   cursor: pointer;
 }
+
+/* SweetAlert Global Button Overrides */
+.swal2-confirm.swal2-styled:hover {
+  background-color: var(--accent-gold) !important;
+  color: #fff !important;
+}

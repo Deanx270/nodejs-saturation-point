@@ -59,7 +59,7 @@ $(document).ready(function () {
     },
     columns: [
       {
-        data: 'images', render: function (data) {
+        data: 'images', orderable: false, render: function (data) {
           if (data && data.length > 0) {
             return `<img src="${data[0]}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; box-shadow: var(--shadow-hover);">`;
           }
@@ -77,11 +77,11 @@ $(document).ready(function () {
         }
       },
       { data: 'Brand.name', defaultContent: '-' },
-      { data: 'categoryId', render: function (data) { return `<span style="text-transform: capitalize;">${data}</span>`; } },
-      { data: 'price', render: function (data) { return `₱${parseFloat(data).toLocaleString('en-US', { minimumFractionDigits: 2 })}`; } },
+      { data: 'categoryId', render: function (data, type) { if(type !== 'display') return data; return `<span style="text-transform: capitalize;">${data}</span>`; } },
+      { data: 'price', render: function (data, type) { if(type !== 'display') return parseFloat(data) || 0; return `₱${parseFloat(data).toLocaleString('en-US', { minimumFractionDigits: 2 })}`; } },
       { data: 'stock' },
       {
-        data: 'id', render: function (data, type, row) {
+        data: 'id', orderable: false, render: function (data, type, row) {
           return `
             <div style="display: flex; gap: 12px; align-items: center; justify-content: flex-start;">
               <button class="edit-btn" data-id="${data}" style="font-family: 'Montserrat', sans-serif; background:none; border:none; color:var(--accent-gold); cursor:pointer; font-size:0.8rem; font-weight:500; display:flex; align-items:center;"><i data-lucide="edit-2" style="width:14px;height:14px;margin-right:4px;"></i> Edit</button>

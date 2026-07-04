@@ -3,6 +3,13 @@
 
 <head>
   <%- include('partials/head') %>
+    <script>
+      if (!sessionStorage.getItem('justCheckedOut')) {
+        window.location.replace('/');
+      } else {
+        sessionStorage.removeItem('justCheckedOut');
+      }
+    </script>
     <style>
       .success-container {
         max-width: 600px;
@@ -48,7 +55,7 @@
       }
 
       .btn-return:hover {
-        background: #292524;
+        background: var(--accent-gold);
         color: #FFF;
       }
     </style>

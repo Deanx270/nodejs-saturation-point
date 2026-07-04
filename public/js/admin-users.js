@@ -39,7 +39,8 @@ $(document).ready(function () {
     columns: [
       {
         data: 'id', render: function (data, type, row) {
-          if (type === 'display' && data.length > 8) {
+          if (type !== 'display') return data;
+          if (data.length > 8) {
             return `<span class="copyable-id" data-clipboard-text="${data}" title="Click to copy ${data}" style="cursor: pointer; border-bottom: 1px dotted #ccc; color: var(--accent-gold); transition: color 0.2s ease;">${data.substr(0, 8)}...</span>`;
           }
           return `<span class="copyable-id" data-clipboard-text="${data}" title="Click to copy ${data}" style="cursor: pointer; border-bottom: 1px dotted #ccc; color: var(--accent-gold); transition: color 0.2s ease;">${data}</span>`;
@@ -48,6 +49,7 @@ $(document).ready(function () {
       {
         data: null, render: function (data, type, row) {
           const name = `${row.firstName} ${row.lastName}`;
+          if (type !== 'display') return name;
           const safeData = name.replace(/"/g, '&quot;');
           return `<span class="dt-truncate" title="${safeData}">${name}</span>`;
         }
@@ -55,8 +57,9 @@ $(document).ready(function () {
       {
         data: 'email', render: function (data, type, row) {
           if (!data) return '-';
+          if (type !== 'display') return data;
           const safeData = typeof data === 'string' ? data.replace(/"/g, '&quot;') : data;
-          if (type === 'display' && data.length > 20) {
+          if (data.length > 20) {
             return `<span title="${safeData}" style="cursor: help; border-bottom: 1px dotted #ccc;">${data.substr(0, 20)}...</span>`;
           }
           return `<span title="${safeData}">${data}</span>`;
@@ -91,6 +94,7 @@ $(document).ready(function () {
       {
         data: 'status',
         render: function (data, type, row) {
+          if (type === 'sort') return data === 'active' ? 1 : 2;
           if (type !== 'display') return data;
 
           let disabled = '';
@@ -108,6 +112,7 @@ $(document).ready(function () {
       },
       {
         data: 'id',
+        orderable: false,
         render: function (data, type, row) {
           let disabledAttr = '';
           let opacity = '1';

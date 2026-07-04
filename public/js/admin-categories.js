@@ -38,7 +38,8 @@ $(document).ready(function () {
       },
       {
         data: 'productCount',
-        render: function (data) {
+        render: function (data, type) {
+          if (type !== 'display') return parseInt(data) || 0;
           return `<span class="badge" style="background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border-subtle);">${data || 0} Products</span>`;
         }
       },

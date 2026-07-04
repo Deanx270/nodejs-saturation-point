@@ -145,6 +145,7 @@ $(document).ready(function () {
           success: function (res) {
             localStorage.removeItem('cart');
             updateCartBadge();
+            sessionStorage.setItem('justCheckedOut', 'true');
             window.location.href = '/checkout-success';
           },
           error: function (xhr) {

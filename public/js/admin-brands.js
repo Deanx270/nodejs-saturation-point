@@ -28,8 +28,9 @@ $(document).ready(function () {
       {
         data: 'name', render: function (data, type) {
           if (!data) return '-';
+          if (type !== 'display') return data;
           const safeData = typeof data === 'string' ? data.replace(/"/g, '&quot;') : data;
-          if (type === 'display' && data.length > 20) {
+          if (data.length > 20) {
             return `<span title="${safeData}" style="cursor: help; border-bottom: 1px dotted #ccc;">${data.substr(0, 20)}...</span>`;
           }
           return `<span title="${safeData}">${data}</span>`;
@@ -38,8 +39,9 @@ $(document).ready(function () {
       {
         data: 'origin', render: function (data, type) {
           if (!data) return '-';
+          if (type !== 'display') return data;
           const safeData = typeof data === 'string' ? data.replace(/"/g, '&quot;') : data;
-          if (type === 'display' && data.length > 20) {
+          if (data.length > 20) {
             return `<span title="${safeData}" style="cursor: help; border-bottom: 1px dotted #ccc;">${data.substr(0, 20)}...</span>`;
           }
           return `<span title="${safeData}">${data}</span>`;
@@ -47,6 +49,7 @@ $(document).ready(function () {
       },
       {
         data: 'status', render: function (data, type, row) {
+          if (type === 'sort') return data === 'active' ? 1 : 2;
           if (type !== 'display') return data;
           return `
             <select class="action-select status-select" data-id="${row.id}" style="margin:0;">
@@ -57,7 +60,7 @@ $(document).ready(function () {
         }
       },
       {
-        data: 'id', render: function (data, type, row) {
+        data: 'id', orderable: false, render: function (data, type, row) {
           return `
             <div style="display: flex; gap: 12px; align-items: center; justify-content: flex-start;">
               <button class="edit-btn" data-id="${data}" style="font-family: 'Montserrat', sans-serif; background:none; border:none; color:var(--accent-gold); cursor:pointer; font-size:0.8rem; font-weight:500; display:flex; align-items:center;"><i data-lucide="edit-2" style="width:14px;height:14px;margin-right:4px;"></i> Edit</button>

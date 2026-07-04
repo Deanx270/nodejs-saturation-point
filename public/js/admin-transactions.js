@@ -37,6 +37,10 @@ $(document).ready(function () {
       {
         data: null,
         render: function (data, type, row) {
+          if (type === 'sort' && row.User) {
+            return `${row.User.firstName} ${row.User.lastName}`;
+          }
+          if (type !== 'display') return data;
           if (row.User) {
             return `${row.User.firstName} ${row.User.lastName} <br><small style="color:var(--text-muted)">${row.User.email}</small>`;
           }
@@ -45,13 +49,15 @@ $(document).ready(function () {
       },
       {
         data: 'createdAt',
-        render: function (data) {
+        render: function (data, type) {
+          if (type !== 'display') return data;
           return new Date(data).toLocaleString();
         }
       },
       {
         data: 'totalAmount',
-        render: function (data) {
+        render: function (data, type) {
+          if (type !== 'display') return parseFloat(data) || 0;
           return '₱' + parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
         }
       },
@@ -59,6 +65,10 @@ $(document).ready(function () {
       {
         data: 'status',
         render: function (data, type, row) {
+          if (type === 'sort') {
+            const statusOrder = { 'pending': 1, 'shipped': 2, 'delivered': 3, 'cancelled': 4 };
+            return statusOrder[data] || 99;
+          }
           if (type !== 'display') return data;
           const statuses = ['pending', 'shipped', 'delivered', 'cancelled'];
           const isDisabled = (data === 'cancelled' || data === 'delivered') ? 'disabled' : '';
