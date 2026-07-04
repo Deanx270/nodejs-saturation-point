@@ -10,21 +10,32 @@ $(document).ready(function () {
   const grid = $('#productGrid');
   const spinner = $('#catalogSpinner');
 
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('category')) {
-    $('#categoryFilter').val(urlParams.get('category'));
-  }
+  const loadCategories = $.ajax({ url: '/api/categories', type: 'GET' });
+  const loadBrands = $.ajax({ url: '/api/brands', type: 'GET' });
 
-  $.ajax({
-    url: '/api/brands',
-    type: 'GET',
-    success: function (brands) {
-      let options = '';
-      brands.forEach(b => {
-        options += `<option value="${b.id}">${b.name}</option>`;
-      });
-      $('#brandFilter').append(options);
+  $.when(loadCategories, loadBrands).done(function (catArgs, brandArgs) {
+    const categories = catArgs[0];
+    const brands = brandArgs[0];
+
+    let catOptions = '';
+    categories.forEach(c => {
+      catOptions += `<option value="${c.id}">${c.name}</option>`;
+    });
+    $('#categoryFilter').append(catOptions);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('category')) {
+      $('#categoryFilter').val(urlParams.get('category'));
     }
+
+    let brandOptions = '';
+    brands.forEach(b => {
+      brandOptions += `<option value="${b.id}">${b.name}</option>`;
+    });
+    $('#brandFilter').append(brandOptions);
+
+    // Trigger initial product load now that filters are populated
+    loadProducts(currentPage);
   });
 
   function getFilters() {
@@ -103,7 +114,7 @@ $(document).ready(function () {
     });
   }
 
-  loadProducts(currentPage);
+  // Initial load is now handled after filters are loaded
 
   $('#toggleFilterMenu').on('click', function (e) {
     e.stopPropagation();
@@ -120,6 +131,16 @@ $(document).ready(function () {
     currentPage = 1;
     hasMore = true;
     grid.empty();
+    
+    const url = new URL(window.location);
+    const catId = $('#categoryFilter').val();
+    if (catId) {
+      url.searchParams.set('category', catId);
+    } else {
+      url.searchParams.delete('category');
+    }
+    window.history.replaceState({}, '', url);
+
     loadProducts(1);
   }
 
