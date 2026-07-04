@@ -65,6 +65,12 @@ $(document).ready(function () {
       {
         data: 'role',
         render: function (data, type, row) {
+          if (type === 'sort') {
+            const roleOrder = { 'head_admin': 1, 'admin': 2, 'staff': 3, 'customer': 4 };
+            return roleOrder[data] || 99;
+          }
+          if (type !== 'display') return data;
+
           if (data === 'customer' || data === 'head_admin') {
             let displayRole = data === 'head_admin' ? 'Head Admin' : 'Customer';
             return `<span class="badge" style="background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border-subtle);">${displayRole}</span>`;
@@ -85,6 +91,8 @@ $(document).ready(function () {
       {
         data: 'status',
         render: function (data, type, row) {
+          if (type !== 'display') return data;
+
           let disabled = '';
           if (row.id === loggedInUserId) disabled = 'disabled';
           if (role === 'admin' && (row.role === 'admin' || row.role === 'head_admin')) disabled = 'disabled';
