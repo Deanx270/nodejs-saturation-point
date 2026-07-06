@@ -34,7 +34,6 @@ $(document).ready(function () {
     });
     $('#brandFilter').append(brandOptions);
 
-    // Trigger initial product load now that filters are populated
     loadProducts(currentPage);
   });
 
@@ -114,8 +113,6 @@ $(document).ready(function () {
     });
   }
 
-  // Initial load is now handled after filters are loaded
-
   $('#toggleFilterMenu').on('click', function (e) {
     e.stopPropagation();
     $('#filterMenu').toggleClass('show');
@@ -131,7 +128,7 @@ $(document).ready(function () {
     currentPage = 1;
     hasMore = true;
     grid.empty();
-    
+
     const url = new URL(window.location);
     const catId = $('#categoryFilter').val();
     if (catId) {

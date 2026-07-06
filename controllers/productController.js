@@ -195,7 +195,13 @@ exports.createProduct = async (req, res) => {
     }
 
     const product = await Product.create({
-      name, description, price, stock, categoryId, brandId, images: imagePaths
+      name,
+      description,
+      price,
+      stock,
+      categoryId,
+      brandId,
+      images: imagePaths
     });
     res.status(201).json({ message: 'Product created successfully', product });
   } catch (error) {
