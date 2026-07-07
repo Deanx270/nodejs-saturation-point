@@ -1,4 +1,4 @@
-const { Transaction, TransactionItem, Product, Category, sequelize } = require('../models');
+const { Transaction, TransactionItem, Product, Category, sequelize } = require('../../models');
 
 exports.getDashboardStats = async (req, res) => {
   try {
@@ -42,7 +42,7 @@ exports.getDashboardStats = async (req, res) => {
 
     const totalOrders = await Transaction.count();
     const activeProducts = await Product.count();
-    const { User } = require('../models');
+    const { User } = require('../../models');
     const totalUsers = await User.count({ where: { role: 'customer' } });
 
     res.json({
