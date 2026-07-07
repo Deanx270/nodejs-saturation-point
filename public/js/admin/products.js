@@ -100,6 +100,7 @@ $(document).ready(function () {
     $('#modalTitle').text('Add Product');
     $('#productForm')[0].reset();
     $('#productId').val('');
+    existingImages = [];
     uploadFiles = new DataTransfer();
     updateImageGrid();
     $('.auth-error-banner').remove();
