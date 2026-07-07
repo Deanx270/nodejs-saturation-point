@@ -27,9 +27,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/images/uploads')
 
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/users', require('./routes/api/users'));
-app.use('/api/admin/users', require('./routes/api/adminUsers'));
-app.use('/api/admin/transactions', require('./routes/api/adminTransactions'));
-app.use('/api/admin/dashboard', require('./routes/api/dashboard'));
+app.use('/api/admin/users', require('./routes/api/admin/users'));
+app.use('/api/admin/transactions', require('./routes/api/admin/transactions'));
+app.use('/api/admin/dashboard', require('./routes/api/admin/dashboard'));
 app.use('/api/categories', require('./routes/api/categories'));
 app.use('/api/products', require('./routes/api/products'));
 app.use('/api/brands', require('./routes/api/brands'));

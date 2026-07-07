@@ -27,7 +27,7 @@ This guide maps the curriculum requirements to the actual files in this project 
   * User Model: [models/User.js](./models/User.js)
 * **MP6: User registration, Login API via jQuery AJAX. Admin can update role of user and deactivate users. List users on DataTable (NodeJS)**
   * User Registration/Login Frontend JS: [public/js/auth.js](./public/js/auth.js)
-  * Admin User Management Controller: [controllers/adminUserController.js](./controllers/adminUserController.js)
+  * Admin User Management Controller: [controllers/admin/userController.js](./controllers/admin/userController.js)
   * Admin Users View: [views/admin/users.ejs](./views/admin/users.ejs)
   * Admin Users Frontend JS: [public/js/admin/users.js](./public/js/admin/users.js)
 * **Quiz 6: Route protection. Middleware to check a user's role**
@@ -47,7 +47,7 @@ This guide maps the curriculum requirements to the actual files in this project 
   * Homepage View: [views/index.ejs](./views/index.ejs)
   * Homepage Frontend JS: [public/js/catalog.js](./public/js/catalog.js)
 * **Quiz 7: Three (3) JS charts (Bar, Line, and Pie charts)**
-  * Dashboard API Controller: [controllers/dashboardController.js](./controllers/dashboardController.js)
+  * Dashboard API Controller: [controllers/admin/dashboardController.js](./controllers/admin/dashboardController.js)
   * Admin Dashboard View: [views/admin/dashboard.ejs](./views/admin/dashboard.ejs)
   * Admin Dashboard Frontend JS: [public/js/admin/dashboard.js](./public/js/admin/dashboard.js)
 * **Unit Test 2: jQuery infinite scroll (for the public catalog)**
