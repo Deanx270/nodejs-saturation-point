@@ -20,6 +20,10 @@ const verifyToken = async (req, res, next) => {
       return res.status(401).json({ error: 'Invalid Token. User not found.' });
     }
 
+    if (user.token !== token) {
+      return res.status(401).json({ error: 'Token is invalid or expired. Please log in again.' });
+    }
+
     if (user.status === 'deactivated') {
       return res.status(403).json({ error: 'Your account has been deactivated.' });
     }
