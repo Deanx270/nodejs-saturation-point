@@ -165,9 +165,11 @@ exports.updateTransactionStatus = async (req, res) => {
 
     if (status === 'shipped' || status === 'delivered' || status === 'cancelled') {
       if (transaction.User && transaction.User.email) {
-        generateReceiptPdf(transaction)
+        const firstName = transaction.User.firstName || 'Customer';
+        const pdfPromise = status === 'delivered' ? generateReceiptPdf(transaction) : Promise.resolve(null);
+        
+        pdfPromise
           .then(pdfBuffer => {
-            const firstName = transaction.User.firstName || 'Customer';
             return sendReceiptEmail(transaction.User.email, firstName, status, transaction.id, pdfBuffer);
           })
           .then(() => {

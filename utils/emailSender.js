@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 const sendVerificationEmail = async (toEmail, token, firstName, lastName) => {
   const verificationUrl = `http://localhost:${process.env.PORT || 3000}/api/auth/verify?token=${token}`;
-  
+
   const mailOptions = {
     from: '"The Saturation Point" <no-reply@thesaturationpoint.com>',
     to: toEmail,

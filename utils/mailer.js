@@ -13,9 +13,9 @@ const getStatusMessage = (status) => {
   let color = '#1B263B';
   if (status === 'delivered') color = '#166534';
   if (status === 'cancelled') color = '#991b1b';
-  
+
   const statusEmphasis = `<strong style="color: ${color}; font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase;">${status}</strong>`;
-  
+
   if (status === 'shipped') return `Your order has been ${statusEmphasis} and is on its way.`;
   if (status === 'delivered') return `Your order has been successfully ${statusEmphasis}.`;
   if (status === 'cancelled') return `Your order has been ${statusEmphasis}.`;
@@ -38,7 +38,7 @@ exports.sendReceiptEmail = async (customerEmail, customerName, status, orderId, 
           
           <p style="font-size: 16px; margin-bottom: 20px;">Dear ${customerName},</p>
           <p style="font-size: 16px; line-height: 1.6;">${message}</p>
-          <p style="font-size: 16px; line-height: 1.6;">Your official order documentation is attached to this email for your records.</p>
+          ${status === 'delivered' ? '<p style="font-size: 16px; line-height: 1.6;">Your official order documentation is attached to this email for your records.</p>' : ''}
           
           <div style="margin: 40px 0; text-align: center;">
             <a href="http://localhost:3000" style="display: inline-block; background-color: #1B263B; color: #FFFFFF; text-decoration: none; padding: 12px 30px; border-radius: 4px; font-size: 14px; letter-spacing: 1px;">VISIT STORE</a>
@@ -51,13 +51,13 @@ exports.sendReceiptEmail = async (customerEmail, customerName, status, orderId, 
         </div>
       </div>
     `,
-    attachments: [
+    attachments: status === 'delivered' && pdfBuffer ? [
       {
         filename: `Receipt-${orderId}.pdf`,
         content: pdfBuffer,
         contentType: 'application/pdf'
       }
-    ]
+    ] : []
   };
 
   return transporter.sendMail(mailOptions);
